@@ -26,14 +26,19 @@ let price
 let cooldownTimer
 let chartData
 
-window.onload = preload;
+// window.onload = preload;
+// var i = 0;
+// function preload() {
+//   if (window.BinanceChain) {
+//     BinanceChain.on('accountsChanged', function ([addr]) {
+//       loadAccount(addr);
+//     });
+//   }
+//   if (i++ === 4) return load();
+//   setTimeout(preload, 60);
+// }
 
-var i = 0;
-function preload() {
-  if (window.BinanceChain) return load();
-  if (i++ === 4) return;
-  setTimeout(preload, 1000);
-}
+window.onload = load;
 
 async function load() {
   registerWeb3()
@@ -49,20 +54,18 @@ async function load() {
   rebaseButton.addEventListener("click", function () {
     rebase()
   })
-  await loadAccount()
+  completeBootLoader()
+  loadStats()
 }
 
 async function connectWeb3() {
   await requireWeb3()
-  await window.BinanceChain.request({method: "eth_requestAccounts"})
-  await loadAccount()
+  const [addr] = await window.BinanceChain.request({method: "eth_requestAccounts"})
+  await loadAccount(addr)
 }
 
-async function loadAccount() {
-  const [addr] = await window.BinanceChain.request({method: "eth_accounts"})
+async function loadAccount(addr) {
   setAddress(addr)
-
-  completeBootLoader()
   loadStats()
 }
 
@@ -306,7 +309,6 @@ async function requireWeb3(addr) {
   }
   if (addr && !address) {
     const [addr] = await BinanceChain.request({method: "eth_requestAccounts"})
-    console.log(addr);
     setAddress(addr)
   }
 }
