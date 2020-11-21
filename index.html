@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ditto Token Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/nprogress@0.2.0/nprogress.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.css"
+      rel="stylesheet"
+    />
+    <link href="style.base.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div id="loader-container">
+      <div id="loader"></div>
+    </div>
+
+    <div id="root-container" class="hidden">
+      <header class="flex justify-space">
+        <h2 class="flex flex-grow items-center">
+          <a href="/"><img src="logo.png" alt="logo" width="80" /></a>
+        </h2>
+
+        <div id="header-actions" class="flex justify-space">
+          <div id="address-label" class="flex justify-center"></div>
+          <div id="connect-button-container" class="flex justify-center hidden">
+            <button class="dark">Connect to Binance Chain Wallet</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex flex-col">
+        <div class="row">
+          <div class="col mr">
+            <div>REBASE COOLDOWN</div>
+            <div></div>
+          </div>
+          <div class="col ml mr">
+            <div>DITTO PRICE</div>
+            <div></div>
+          </div>
+          <div class="col ml">
+            <div>DITTO SUPPLY</div>
+            <div></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col mr">
+            <div></div>
+            <div><button disabled class="dark">REBASE</button></div>
+          </div>
+          <div class="col ml mr">
+            <div>PRICE TARGET</div>
+            <div>$1.00</div>
+          </div>
+          <div class="col ml">
+            <div>DITTO MARKET CAP</div>
+            <div></div>
+          </div>
+        </div>
+
+        <div id="price-chart" class="chart-container">
+          <div class='chart-heading'>PRICE</div>
+          <div class='flex'>
+            <div class='chart-toggle-buttons' data-kind="duration">
+              <div class='active' data-duration='1d'>1 DAY</div>
+              <div data-duration='30d'>30 DAYS</div>
+              <div data-duration='all'>ALL</div>
+            </div>
+            <div class='chart-toggle-buttons ml' data-kind="type">
+              <div class='active' data-type='abs'>ABS</div>
+              <div data-type='%'>%</div>
+            </div>
+          </div>
+          <div class="full-width chart">
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+
+        <div id="supply-chart" class="chart-container">
+          <div class='chart-heading'>SUPPLY</div>
+          <div class='flex'>
+            <div class='chart-toggle-buttons' data-kind="duration">
+              <div class='active' data-duration='1d'>1 DAY</div>
+              <div data-duration='30d'>30 DAYS</div>
+              <div data-duration='all'>ALL</div>
+            </div>
+            <div class='chart-toggle-buttons ml' data-kind="type">
+              <div class='active' data-type='abs'>ABS</div>
+              <div data-type='%'>%</div>
+            </div>
+          </div>
+          <div class="full-width chart">
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+
+        <div id="mkt-cap-chart" class="chart-container">
+          <div class='chart-heading'>MARKET CAP</div>
+          <div class='flex'>
+            <div class='chart-toggle-buttons' data-kind="duration">
+              <div class='active' data-duration='1d'>1 DAY</div>
+              <div data-duration='30d'>30 DAYS</div>
+              <div data-duration='all'>ALL</div>
+            </div>
+            <div class='chart-toggle-buttons ml' data-kind="type">
+              <div class='active' data-type='abs'>ABS</div>
+              <div data-type='%'>%</div>
+            </div>
+          </div>
+          <div class="full-width chart">
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.bundle.min.js"></script>
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="script.config.js"></script>
+    <script src="script.web3.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
