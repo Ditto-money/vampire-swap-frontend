@@ -1,5 +1,5 @@
 www:
-	@python2 -m SimpleHTTPServer 3002
+	@python2 -m SimpleHTTPServer 3001
 
 prd:
 	@git pull

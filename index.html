@@ -28,9 +28,12 @@
 
     <div id="root-container" class="hidden">
       <header class="flex justify-space">
-        <h2 class="flex flex-grow items-center">
-          <a href="/"><img src="logo.png" alt="logo" width="80" /></a>
-        </h2>
+        <div class="flex flex-grow items-center">
+          <a href="/">
+            <img src="logo.png" alt="logo" width="80" />
+          </a>
+          <span class="hidden testnet">Testnet</span>
+        </div>
 
         <div id="header-actions" class="flex justify-space">
           <div id="address-label" class="flex justify-center"></div>
@@ -71,16 +74,16 @@
         </div>
 
         <div id="price-chart" class="chart-container">
-          <div class='chart-heading'>PRICE</div>
-          <div class='flex'>
-            <div class='chart-toggle-buttons' data-kind="duration">
-              <div class='active' data-duration='1d'>1 DAY</div>
-              <div data-duration='30d'>30 DAYS</div>
-              <div data-duration='all'>ALL</div>
+          <div class="chart-heading">PRICE</div>
+          <div class="flex">
+            <div class="chart-toggle-buttons" data-kind="duration">
+              <div class="active" data-duration="1d">1 DAY</div>
+              <div data-duration="30d">30 DAYS</div>
+              <div data-duration="all">ALL</div>
             </div>
-            <div class='chart-toggle-buttons ml' data-kind="type">
-              <div class='active' data-type='abs'>ABS</div>
-              <div data-type='%'>%</div>
+            <div class="chart-toggle-buttons ml" data-kind="type">
+              <div class="active" data-type="abs">ABS</div>
+              <div data-type="%">%</div>
             </div>
           </div>
           <div class="full-width chart">
@@ -89,16 +92,16 @@
         </div>
 
         <div id="supply-chart" class="chart-container">
-          <div class='chart-heading'>SUPPLY</div>
-          <div class='flex'>
-            <div class='chart-toggle-buttons' data-kind="duration">
-              <div class='active' data-duration='1d'>1 DAY</div>
-              <div data-duration='30d'>30 DAYS</div>
-              <div data-duration='all'>ALL</div>
+          <div class="chart-heading">SUPPLY</div>
+          <div class="flex">
+            <div class="chart-toggle-buttons" data-kind="duration">
+              <div class="active" data-duration="1d">1 DAY</div>
+              <div data-duration="30d">30 DAYS</div>
+              <div data-duration="all">ALL</div>
             </div>
-            <div class='chart-toggle-buttons ml' data-kind="type">
-              <div class='active' data-type='abs'>ABS</div>
-              <div data-type='%'>%</div>
+            <div class="chart-toggle-buttons ml" data-kind="type">
+              <div class="active" data-type="abs">ABS</div>
+              <div data-type="%">%</div>
             </div>
           </div>
           <div class="full-width chart">
@@ -107,16 +110,16 @@
         </div>
 
         <div id="mkt-cap-chart" class="chart-container">
-          <div class='chart-heading'>MARKET CAP</div>
-          <div class='flex'>
-            <div class='chart-toggle-buttons' data-kind="duration">
-              <div class='active' data-duration='1d'>1 DAY</div>
-              <div data-duration='30d'>30 DAYS</div>
-              <div data-duration='all'>ALL</div>
+          <div class="chart-heading">MARKET CAP</div>
+          <div class="flex">
+            <div class="chart-toggle-buttons" data-kind="duration">
+              <div class="active" data-duration="1d">1 DAY</div>
+              <div data-duration="30d">30 DAYS</div>
+              <div data-duration="all">ALL</div>
             </div>
-            <div class='chart-toggle-buttons ml' data-kind="type">
-              <div class='active' data-type='abs'>ABS</div>
-              <div data-type='%'>%</div>
+            <div class="chart-toggle-buttons ml" data-kind="type">
+              <div class="active" data-type="abs">ABS</div>
+              <div data-type="%">%</div>
             </div>
           </div>
           <div class="full-width chart">
