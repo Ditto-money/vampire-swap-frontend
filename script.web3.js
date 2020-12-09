@@ -1,54 +1,55 @@
-function registerWeb3() {
-  window.WEB3 = new Web3(WEB3_PROVIDER)
-}
-
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
-class Contract {
-  async setContract(name, address) {
-    this.address = address
-    const abi = await xhr("get", "abis/" + name + ".json")
-    this.contract = new window.WEB3.eth.Contract(abi, this.address)
+async function makeContracts([name, address]) {
+  const abi = await xhr('get', 'abis/' + name + '.json')
+
+  window.READ_WEB3 = new Web3(WEB3_PROVIDER)
+  const readContract = new READ_WEB3.eth.Contract(abi, address)
+
+  let writeContract
+  if (window.web3) {
+    window.WRITE_WEB3 = new Web3(web3.currentProvider)
+    writeContract = new WRITE_WEB3.eth.Contract(abi, address)
   }
 
-  setAccount(account) {
-    this.account = account
-  }
-
-  async read(method, args = [], options = {}) {
-    return this.callContract(false, method, args, options)
-  }
-
-  async write(method, args = [], options = {}) {
-    return this.callContract(true, method, args, options)
-  }
-
-  async callContract(write, method, args) {
-    return new Promise((resolve, reject) => {
-      const options = {}
-      if (this.account) {
-        options.from = this.account
+  return {
+    name,
+    read: (method) => {
+      return (...args) => {
+        return new Promise((resolve, reject) => {
+          readContract.methods[method](...args).call(
+            handleContractCall(resolve, reject)
+          )
+        })
       }
-      this.contract.methods[method](...args)[write ? "send" : "call"](
-        options,
-        (err, response) => {
-          if (err) {
-            return reject(new Error(method  + ' : ' + err.message))
-          }
-          if (response.c && response.c.length) {
-            return resolve(response.c)
-          }
-          resolve(response)
-          // resolve(response.c?.[0] ?? response);
+    },
+    write: (from) => {
+      return (method) => {
+        return (...args) => {
+          return new Promise((resolve, reject) => {
+            writeContract.methods[method](...args).send(
+              {from},
+              handleContractCall(resolve, reject)
+            )
+          })
         }
-      )
-    })
+      }
+    },
   }
+}
 
-  on(eventName, fn) {
-    return this.contract.events[eventName]({}, fn)
+function handleContractCall(resolve, reject) {
+  return (err, response) => {
+    if (err) {
+      return reject(new Error(err.message))
+    }
+    if (response.c && response.c.length) {
+      return resolve(response.c)
+    }
+    resolve(response)
+    // resolve(response.c?.[0] ?? response);
   }
 }
 
@@ -65,7 +66,7 @@ async function waitForTxn(txHash, interval) {
 
 function waitForTxnPromise(txHash, interval) {
   const transactionReceiptRetry = () =>
-    window.WEB3.eth
+    WRITE_WEB3.eth
       .getTransactionReceipt(txHash)
       .then((receipt) =>
         receipt !== null
@@ -77,10 +78,10 @@ function waitForTxnPromise(txHash, interval) {
     return sequentialPromise(
       txHash.map((oneTxHash) => () => waitForTxnPromise(oneTxHash, interval))
     )
-  } else if (typeof txHash === "string") {
+  } else if (typeof txHash === 'string') {
     return transactionReceiptRetry()
   } else {
-    throw new Error("Invalid Type: " + txHash)
+    throw new Error('Invalid Type: ' + txHash)
   }
 }
 

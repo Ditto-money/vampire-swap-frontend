@@ -20,33 +20,20 @@ const [
 const rebaseButton = rebaseButtonContainer.querySelector('button')
 
 const contracts = {}
+
 let address
 let supply
 let price
 let cooldownTimer
 let chartData
 
-// window.onload = preload;
-// var i = 0;
-// function preload() {
-//   if (window.BinanceChain) {
-//     BinanceChain.on('accountsChanged', function ([addr]) {
-//       loadAccount(addr);
-//     });
-//   }
-//   if (i++ === 4) return load();
-//   setTimeout(preload, 60);
-// }
-
 window.onload = load
 
 async function load() {
-  registerWeb3()
-  await Promise.all(
-    Object.entries(CONTRACTS).map(function ([name, address]) {
-      const contract = (contracts[name] = new Contract())
-      return contract.setContract(name, address)
-    })
+  ;(await Promise.all(Object.entries(CONTRACTS).map(makeContracts))).forEach(
+    (contract) => {
+      contracts[contract.name] = contract
+    }
   )
   connectButton.addEventListener('click', function () {
     connectWeb3()
@@ -61,7 +48,7 @@ async function load() {
 
 async function connectWeb3() {
   await requireWeb3()
-  const [addr] = await window.BinanceChain.request({
+  const [addr] = await PROVIDER().request({
     method: 'eth_requestAccounts',
   })
   await loadAccount(addr)
@@ -79,10 +66,6 @@ async function setAddress(addr) {
       address.length - 4,
       address.length
     )}`
-
-    for (const contractName in contracts) {
-      contracts[contractName].setAccount(address)
-    }
   }
   toggle(connectButtonContainer, !address)
 }
@@ -96,9 +79,8 @@ async function loadStats() {
 
 async function loadCooldownStats() {
   const cooldownExpiryTimestamp = await contracts.controller.read(
-    'cooldownExpiryTimestamp',
-    []
-  )
+    'cooldownExpiryTimestamp'
+  )()
   if (cooldownTimer) clearInterval(cooldownTimer)
   cooldownTimer = setInterval(function () {
     const ms = 1000 * cooldownExpiryTimestamp - Date.now()
@@ -116,7 +98,7 @@ async function loadCooldownStats() {
 
 async function loadDittoPrice() {
   price = parseFloat(
-    Web3.utils.fromWei(await contracts.oracle.read('getData', []), 'ether')
+    Web3.utils.fromWei(await contracts.oracle.read('getData')(), 'ether')
   )
   dittoPriceContainer.querySelectorAll('div')[1].innerText =
     '$' + toHumanizedCurrency(price)
@@ -137,8 +119,9 @@ async function loadDittoMarketCap() {
 
 async function rebase() {
   await requireWeb3(true)
+  await requireCorrectNetwork()
   try {
-    await waitForTxn(await contracts.controller.write('rebase'))
+    await waitForTxn(await contracts.controller.write(address)('rebase')())
   } catch (e) {
     return sl('error', e)
   }
@@ -304,16 +287,32 @@ function attr(el, attribute, val) {
 }
 
 async function requireWeb3(addr) {
-  if (!window.BinanceChain) {
+  if (!PROVIDER()) {
     const e = new Error(
-      'Please install Binance Chain Wallet browser extension.'
+      'Please install Metamask or Binance Chain Wallet browser extension.'
     )
     sl('error', e)
     throw e
   }
   if (addr && !address) {
-    const [addr] = await BinanceChain.request({method: 'eth_requestAccounts'})
+    const [addr] = await PROVIDER().request({method: 'eth_requestAccounts'})
     setAddress(addr)
+  }
+}
+
+function requireCorrectNetwork() {
+  let chain
+  if (IS_TESTNET) {
+    if (WRITE_WEB3.currentProvider.networkVersion === 97) {
+      chain = 'Binance Smart Chain Testnet'
+    }
+  } else if (WRITE_WEB3.currentProvider.networkVersion === 56) {
+    chain = 'Binance Smart Chain Mainnet'
+  }
+  if (chain) {
+    const e = new Error(`Please install connect to ${chain}.`)
+    sl('error', e)
+    throw e
   }
 }
 
@@ -347,7 +346,7 @@ function toHumanizedCurrency(val) {
 }
 
 function bn(n) {
-  return window.WEB3.utils.toBN(n)
+  return Web3.utils.toBN(n)
 }
 
 function toHumanizedDuration(ms) {
@@ -392,9 +391,9 @@ function sl(type, msg) {
 }
 
 function getBurntAmount() {
-  return contracts.token.read('balanceOf', [
-    '0x000000000000000000000000000000000000dead',
-  ])
+  return contracts.token.read('balanceOf')(
+    '0x000000000000000000000000000000000000dead'
+  )
 }
 
 async function api(method, endpoint, data) {
