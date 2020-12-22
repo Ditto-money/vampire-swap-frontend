@@ -1,13 +1,5 @@
 const rootContainer = document.getElementById('root-container')
 const loaderContainer = document.getElementById('loader-container')
-
-const connectButtonContainer = document.getElementById(
-  'connect-button-container'
-)
-const connectButton = connectButtonContainer.querySelector('button')
-
-const addressLabel = document.getElementById('address-label')
-
 const [
   rebaseCooldownContainer,
   dittoPriceContainer,
@@ -16,12 +8,20 @@ const [
   priceTargetContainer,
   dittoMarketCapContainer,
 ] = document.querySelectorAll('.col')
-
-const rebaseButton = rebaseButtonContainer.querySelector('button')
+const addressLabel = document.getElementById('address-label')
+const rebaseButton = document.getElementById('rebase-button')
+const walletsContainer = document.getElementById('connect-wallets')
+const closeWalletsButton = walletsContainer.querySelector('.close')
+const connectMetamaskButton = document.getElementById('connect-metamask')
+const connectWalletConnectButton = document.getElementById(
+  'connect-wallet-connect'
+)
+const connectBscButton = document.getElementById('connect-bsc')
 
 const contracts = {}
 
-let address
+let writeProvider
+
 let supply
 let price
 let cooldownTimer
@@ -30,44 +30,95 @@ let chartData
 window.onload = load
 
 async function load() {
-  ;(await Promise.all(Object.entries(CONTRACTS).map(makeContracts))).forEach(
-    (contract) => {
-      contracts[contract.name] = contract
-    }
-  )
-  connectButton.addEventListener('click', function () {
-    connectWeb3()
-  })
   rebaseButton.addEventListener('click', function () {
     rebase()
   })
-  completeBootLoader()
-  loadStats()
-  updateStuffIfTestnet()
-}
-
-async function connectWeb3() {
-  await requireWeb3()
-  const [addr] = await PROVIDER().request({
-    method: 'eth_requestAccounts',
+  closeWalletsButton.addEventListener('click', function () {
+    closeWallets()
   })
-  await loadAccount(addr)
+  connectMetamaskButton.addEventListener('click', connectMetamask)
+  connectWalletConnectButton.addEventListener('click', connectWalletConnect)
+  connectBscButton.addEventListener('click', connectBsc)
+
+  await connectCachedProvider()
+  await completeBootLoader()
+  await loadStats()
+  await updateStuffIfTestnet()
 }
 
-async function loadAccount(addr) {
-  setAddress(addr)
-  loadStats()
+async function connectMetamask() {
+  if (!window.ethereum)
+    return sl('error', 'Please install the Metamask extension')
+  await window.ethereum.enable()
+  closeWallets()
+  await loadAccount(window.ethereum)
 }
 
-async function setAddress(addr) {
-  address = addr
+async function connectWalletConnect() {
+  const walletConnectProvider = new WalletConnectProvider.default({
+    infuraId: INFURA_ID,
+  })
+  await walletConnectProvider.enable()
+  closeWallets()
+  await loadAccount(walletConnectProvider)
+}
+
+async function connectBsc() {
+  if (!window.BinanceChain)
+    return sl('error', 'Please install the Binance Wallet extension')
+  await window.BinanceChain.enable()
+  closeWallets()
+  await loadAccount(window.BinanceChain)
+}
+
+function showWallets() {
+  show(walletsContainer)
+}
+
+function closeWallets() {
+  hide(walletsContainer)
+}
+
+async function connectCachedProvider() {
+  ;(await Promise.all(Object.entries(CONTRACTS).map(makeReadContract))).forEach(
+    ([name, contract]) => {
+      contracts[name] = contract
+    }
+  )
+}
+
+async function loadAccount(p) {
+  const provider = new ethers.providers.Web3Provider(p)
+  const net = await provider.getNetwork()
+  if (net.chainId !== REQUIRED_CHAIN_ID) {
+    if (p.disconnect) {
+      p.disconnect()
+    }
+    sl(
+      'error',
+      `Please connect to Binance Smart Chain ${
+        IS_TESTNET ? 'Testnet' : 'Mainnet'
+      } and retry.`
+    )
+    return
+  }
+  writeProvider = provider
+  const signer = provider.getSigner()
+  ;(
+    await Promise.all(
+      Object.entries(CONTRACTS).map(makeWriteContract.bind(null, signer))
+    )
+  ).forEach(([name, contract]) => {
+    contracts[name] = contract
+  })
+  const address = await signer.getAddress()
   if (address) {
     addressLabel.innerText = `${address.substring(0, 6)}...${address.substring(
       address.length - 4,
       address.length
     )}`
   }
-  toggle(connectButtonContainer, !address)
+  loadStats()
 }
 
 async function loadStats() {
@@ -78,9 +129,7 @@ async function loadStats() {
 }
 
 async function loadCooldownStats() {
-  const cooldownExpiryTimestamp = await contracts.controller.read(
-    'cooldownExpiryTimestamp'
-  )()
+  const cooldownExpiryTimestamp = await contracts.controller.cooldownExpiryTimestamp()
   if (cooldownTimer) clearInterval(cooldownTimer)
   cooldownTimer = setInterval(function () {
     const ms = 1000 * cooldownExpiryTimestamp - Date.now()
@@ -97,31 +146,32 @@ async function loadCooldownStats() {
 }
 
 async function loadDittoPrice() {
-  price = parseFloat(
-    Web3.utils.fromWei(await contracts.oracle.read('getData')(), 'ether')
+  price = new Big((await contracts.oracle.getData()).toString()).div(
+    new Big(1e18)
   )
   dittoPriceContainer.querySelectorAll('div')[1].innerText =
     '$' + toHumanizedCurrency(price)
 }
 
 async function loadDittoSupply() {
-  supply = (await api('get', '/total-supply')).totalSupply
-  dittoSupplyContainer.querySelectorAll('div')[1].innerText = toHumanizedNumber(
-    supply
+  supply = new Big((await api('get', '/total-supply')).totalSupply).div(
+    new Big(1e9)
   )
+  dittoSupplyContainer.querySelectorAll(
+    'div'
+  )[1].innerText = toHumanizedCurrency(supply)
 }
 
 async function loadDittoMarketCap() {
-  const mktCap = price * supply
+  const mktCap = price.mul(supply)
   dittoMarketCapContainer.querySelectorAll('div')[1].innerText =
     '$' + toHumanizedCurrency(mktCap)
 }
 
 async function rebase() {
-  await requireWeb3(true)
-  await requireCorrectNetwork()
+  await requireWriteProvider()
   try {
-    await waitForTxn(await contracts.controller.write(address)('rebase')())
+    await contracts.controller.rebase()
   } catch (e) {
     return sl('error', e)
   }
@@ -247,7 +297,7 @@ function setupChart(chartId, current, label, map) {
       for (let i = 1; i < p.length; i++) {
         const a = parseFloat(p[i])
         const b = parseFloat(p[i - 1])
-        y.push(!a ? '0' : (100 * ((a - b) / a)).toFixed(2))
+        y.push(!a ? '0' : (100 * ((a - b) / a)).toHumanizedCurrency(2))
       }
       return {x, y}
     } else {
@@ -286,33 +336,10 @@ function attr(el, attribute, val) {
   }
 }
 
-async function requireWeb3(addr) {
-  if (!PROVIDER()) {
-    const e = new Error(
-      'Please install Metamask or Binance Chain Wallet browser extension.'
-    )
-    sl('error', e)
-    throw e
-  }
-  if (addr && !address) {
-    const [addr] = await PROVIDER().request({method: 'eth_requestAccounts'})
-    setAddress(addr)
-  }
-}
-
-function requireCorrectNetwork() {
-  let chain
-  if (IS_TESTNET) {
-    if (WRITE_WEB3.currentProvider.networkVersion === 97) {
-      chain = 'Binance Smart Chain Testnet'
-    }
-  } else if (WRITE_WEB3.currentProvider.networkVersion === 56) {
-    chain = 'Binance Smart Chain Mainnet'
-  }
-  if (chain) {
-    const e = new Error(`Please install connect to ${chain}.`)
-    sl('error', e)
-    throw e
+async function requireWriteProvider(addr) {
+  if (!writeProvider) {
+    showWallets()
+    throw new Error('Provider required.')
   }
 }
 
@@ -332,21 +359,13 @@ function updateStuffIfTestnet() {
   }
 }
 
-function toHumanizedNumber(val) {
-  return val.toLocaleString('en-US', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  })
-}
-
 function toHumanizedCurrency(val) {
+  if (val.toNumber) {
+    val = val.toNumber()
+  }
   return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
     .format(val)
     .replace('$', '')
-}
-
-function bn(n) {
-  return Web3.utils.toBN(n)
 }
 
 function toHumanizedDuration(ms) {
@@ -391,9 +410,7 @@ function sl(type, msg) {
 }
 
 function getBurntAmount() {
-  return contracts.token.read('balanceOf')(
-    '0x000000000000000000000000000000000000dead'
-  )
+  return contracts.token.balanceOf('0x000000000000000000000000000000000000dead')
 }
 
 async function api(method, endpoint, data) {

@@ -1,8 +1,6 @@
 const IS_TESTNET = !!~window.location.href.indexOf('testnet')
 const IS_DEV = !!~window.location.href.indexOf('local')
 
-const PROVIDER = () => window.ethereum // window.BinanceChain //  || window.ethereum
-
 const API_URL = IS_TESTNET
   ? 'https://ditto.money/testnet-api'
   : IS_DEV
@@ -21,9 +19,15 @@ const CONTRACTS = IS_TESTNET
       oracle: '0x0F9ACBCc0A97d6b915DAd5db4176f2BCB2eDCA63',
     }
 
-const WEB3_PROVIDER = IS_TESTNET
-  ? 'https://data-seed-prebsc-1-s1.binance.org:8545'
-  : 'https://bsc-dataseed1.binance.org:443'
+const READ_WEB3_PROVIDER = new ethers.providers.JsonRpcProvider(
+  IS_TESTNET
+    ? 'https://data-seed-prebsc-1-s1.binance.org:8545'
+    : 'https://bsc-dataseed1.binance.org:443'
+)
+
+const REQUIRED_CHAIN_ID = IS_TESTNET ? 97 : 56
+
+const INFURA_ID = '1e8cc8aac2bd47f98da31fd2846d6132'
 
 const COLORS = {
   red: '#ED7AC0',

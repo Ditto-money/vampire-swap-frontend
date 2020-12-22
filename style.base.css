@@ -46,7 +46,7 @@ body {
 body {
   margin: 0;
   padding: 0;
-  font-family: "Work Sans", Arial, sans-serif;
+  font-family: 'Work Sans', Arial, sans-serif;
   color: #404040;
   background: white;
 }
@@ -101,7 +101,7 @@ button.dark:focus,
 button.dark:active {
   color: white;
   text-shadow: rgba(0, 0, 0, 0) 0 1px 0;
-  background: #ED7AC0; /* linear-gradient(135deg, var(--primary-color), #feb23d); */
+  background: #ed7ac0; /* linear-gradient(135deg, var(--primary-color), #feb23d); */
 }
 
 .flex {
@@ -129,7 +129,7 @@ button.dark:active {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .full-width {
@@ -185,7 +185,8 @@ button.dark:active {
 }
 
 .swal2-loader {
-  border-color: var(--primary-color) transparent var(--primary-color) transparent !important;
+  border-color: var(--primary-color) transparent var(--primary-color)
+    transparent !important;
 }
 
 .ml {

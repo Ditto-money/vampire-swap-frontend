@@ -37,9 +37,6 @@
 
         <div id="header-actions" class="flex justify-space">
           <div id="address-label" class="flex justify-center"></div>
-          <div id="connect-button-container" class="flex justify-center hidden">
-            <button class="dark">Connect to Binance Chain Wallet</button>
-          </div>
         </div>
       </header>
 
@@ -61,7 +58,9 @@
         <div class="row">
           <div class="col mr">
             <div></div>
-            <div><button disabled class="dark">REBASE</button></div>
+            <div class="rebase-button-container">
+              <button id="rebase-button" disabled class="dark">REBASE</button>
+            </div>
           </div>
           <div class="col ml mr">
             <div>PRICE TARGET</div>
@@ -127,11 +126,35 @@
           </div>
         </div>
       </main>
+
+      <div id="connect-wallets" class="hidden">
+        <div>
+          <div class="close">✕</div>
+          <h3>Connect Wallet</h3>
+          <div id="connect-metamask">
+            <img src="wallets/metamask.svg" width="35" height="35" />
+            <div>Metamask</div>
+          </div>
+          <div id="connect-wallet-connect">
+            <img src="wallets/wallet-connect.svg" width="35" height="35" />
+            <div>Wallet Connect</div>
+          </div>
+          <div id="connect-bsc">
+            <img src="wallets/bsc.png" width="35" height="35" />
+            <div>Binance Wallet</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script
+      src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"
+      type="text/javascript"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.bundle.min.js"></script>
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/big.js@6.0.0/big.min.js"></script>
+    <script src="wallet-connect.min.js"></script>
     <script src="script.config.js"></script>
     <script src="script.web3.js"></script>
     <script src="script.js"></script>
