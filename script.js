@@ -17,6 +17,7 @@ const connectWalletConnectButton = document.getElementById(
   'connect-wallet-connect'
 )
 const connectBscButton = document.getElementById('connect-bsc')
+const connectTrustButton = document.getElementById('connect-trust')
 
 const contracts = {}
 
@@ -39,6 +40,7 @@ async function load() {
   connectMetamaskButton.addEventListener('click', connectMetamask)
   connectWalletConnectButton.addEventListener('click', connectWalletConnect)
   connectBscButton.addEventListener('click', connectBsc)
+  connectTrustButton.addEventListener('click', connectMetamask)
 
   await connectCachedProvider()
   await completeBootLoader()
@@ -90,7 +92,7 @@ async function connectCachedProvider() {
 async function loadAccount(p) {
   const provider = new ethers.providers.Web3Provider(p)
   const net = await provider.getNetwork()
-  if (net.chainId !== REQUIRED_CHAIN_ID) {
+  if (net.chainId !== REQUIRED_CHAIN_ID && !p.isTrust) {
     if (p.disconnect) {
       p.disconnect()
     }
