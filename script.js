@@ -94,7 +94,7 @@ async function connectCachedProvider() {
 async function loadAccount(p) {
   const provider = new ethers.providers.Web3Provider(p)
   const net = await provider.getNetwork()
-  if (net.chainId !== REQUIRED_CHAIN_ID && !p.isTrust) {
+  if (!~[REQUIRED_CHAIN_ID, TRUST_WALLET_BUG_CHAIN_ID].indexOf(net.chainId)) {
     if (p.disconnect) {
       p.disconnect()
     }

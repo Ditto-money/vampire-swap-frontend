@@ -27,6 +27,8 @@ const READ_WEB3_PROVIDER = new ethers.providers.JsonRpcProvider(
 
 const REQUIRED_CHAIN_ID = IS_TESTNET ? 97 : 56
 
+const TRUST_WALLET_BUG_CHAIN_ID = 86
+
 const INFURA_ID = '1e8cc8aac2bd47f98da31fd2846d6132'
 
 const COLORS = {
