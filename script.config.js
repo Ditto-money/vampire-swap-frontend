@@ -15,8 +15,8 @@ const CONTRACTS = IS_TESTNET
     }
   : {
       token: '0x233d91A0713155003fc4DcE0AFa871b508B3B715',
-      controller: '0xdA28e9c657D4690cb367D1d3dD969A8969c0b3D8',
-      oracle: '0x0F9ACBCc0A97d6b915DAd5db4176f2BCB2eDCA63',
+      controller: '0xdaE0B6F111c62010a8dC6A003B02053C004cFFc1',
+      oracle: '0x2df19009b4a48636699d4dbf00e1d7f923c6fa47',
     }
 
 const READ_WEB3_PROVIDER = new ethers.providers.JsonRpcProvider(
