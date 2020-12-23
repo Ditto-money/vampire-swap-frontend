@@ -1,3 +1,5 @@
+toFormat(Big)
+
 const rootContainer = document.getElementById('root-container')
 const loaderContainer = document.getElementById('loader-container')
 const [
@@ -363,7 +365,7 @@ function updateStuffIfTestnet() {
 
 function toHumanizedCurrency(val) {
   if (val.toNumber) {
-    val = val.toNumber()
+    return new Big(val.toString()).toFormat(2)
   }
   return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
     .format(val)
