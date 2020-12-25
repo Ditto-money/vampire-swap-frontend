@@ -15,9 +15,9 @@ const rebaseButton = document.getElementById('rebase-button')
 const walletsContainer = document.getElementById('connect-wallets')
 const closeWalletsButton = walletsContainer.querySelector('.close')
 const connectMetamaskButton = document.getElementById('connect-metamask')
-const connectWalletConnectButton = document.getElementById(
-  'connect-wallet-connect'
-)
+// const connectWalletConnectButton = document.getElementById(
+//   'connect-wallet-connect'
+// )
 const connectBscButton = document.getElementById('connect-bsc')
 const connectTrustButton = document.getElementById('connect-trust')
 
@@ -40,7 +40,7 @@ async function load() {
     closeWallets()
   })
   connectMetamaskButton.addEventListener('click', connectMetamask)
-  connectWalletConnectButton.addEventListener('click', connectWalletConnect)
+  // connectWalletConnectButton.addEventListener('click', connectWalletConnect)
   connectBscButton.addEventListener('click', connectBsc)
   connectTrustButton.addEventListener('click', connectMetamask)
 
@@ -58,14 +58,14 @@ async function connectMetamask() {
   await loadAccount(window.ethereum)
 }
 
-async function connectWalletConnect() {
-  const walletConnectProvider = new WalletConnectProvider.default({
-    infuraId: INFURA_ID,
-  })
-  await walletConnectProvider.enable()
-  closeWallets()
-  await loadAccount(walletConnectProvider)
-}
+// async function connectWalletConnect() {
+//   const walletConnectProvider = new WalletConnectProvider.default({
+//     infuraId: INFURA_ID,
+//   })
+//   await walletConnectProvider.enable()
+//   closeWallets()
+//   await loadAccount(walletConnectProvider)
+// }
 
 async function connectBsc() {
   if (!window.BinanceChain)
