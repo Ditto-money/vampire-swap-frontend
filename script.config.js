@@ -2,7 +2,7 @@ const IS_TESTNET = !!~window.location.href.indexOf('testnet')
 const IS_DEV = !!~window.location.href.indexOf('local')
 
 const API_URL = IS_TESTNET
-  ? 'https://ditto.money/testnet-api'
+  ? 'https://ditto.money/api-testnet'
   : IS_DEV
   ? 'http://localhost:5001'
   : 'https://ditto.money/api'
