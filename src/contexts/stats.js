@@ -70,7 +70,9 @@ export function StatsProvider({ children }) {
 
   React.useEffect(() => {
     let isMounted = true;
-    (async () => {
+    const unsubs = [() => (isMounted = false)];
+
+    const load = async () => {
       const [price, cooldownExpiryTimestamp] = await Promise.all([
         oracleContract.getData(),
         controllerContract.cooldownExpiryTimestamp(),
@@ -79,29 +81,50 @@ export function StatsProvider({ children }) {
         setPrice(Big(price).div(1e18));
         setCooldownExpiryTimestamp(Big(cooldownExpiryTimestamp));
       }
-    })();
+    };
 
-    return () => (isMounted = false);
+    const subscribe = () => {
+      const rebasedEvent = controllerContract.filters.LogRebase();
+      controllerContract.on(rebasedEvent, load);
+      unsubs.push(() => controllerContract.off(rebasedEvent, load));
+    };
+
+    load();
+    subscribe();
+    return () => {
+      unsubs.forEach(unsub => unsub());
+    };
   }, [oracleContract, controllerContract]);
 
   React.useEffect(() => {
     let isMounted = true;
-    (async () => {
+    const unsubs = [() => (isMounted = false)];
+
+    const load = async () => {
       const [{ totalSupply }, chartData] = await Promise.all([
         request.api('/total-supply'),
         request.api('/'),
+        // Promise.resolve({ totalSupply: '100' }),
+        // import('api-sample-data.json'),
       ]);
-      // const [{ totalSupply }, chartData] = await Promise.all([
-      //   Promise.resolve({ totalSupply: '100' }),
-      //   import('api-sample-data.json'),
-      // ]);
       if (isMounted) {
         setSupply(Big(totalSupply).div(Big(1e9)));
         setChartData(chartData);
       }
-    })();
-    return () => (isMounted = false);
-  }, []);
+    };
+
+    const subscribe = () => {
+      const rebasedEvent = controllerContract.filters.LogRebase();
+      controllerContract.on(rebasedEvent, load);
+      unsubs.push(() => controllerContract.off(rebasedEvent, load));
+    };
+
+    load();
+    subscribe();
+    return () => {
+      unsubs.forEach(unsub => unsub());
+    };
+  }, [controllerContract]);
 
   return (
     <StatsContext.Provider
