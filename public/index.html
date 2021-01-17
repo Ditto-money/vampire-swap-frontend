@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Ditto Dashboard" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Ditto Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Rubik:400,500,700|Ubuntu+Mono:400,700"
+      rel="stylesheet"
+    />
+    <style media="screen">
+      :root {
+        --primary-color: #ed7ac0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Rubik', sans-serif;
+
+        /* from material ui */
+        background-color: #303030;
+        color: #fff;
+      }
+
+      .boot-loader,
+      .boot-loader body {
+        height: 100%;
+        width: 100%;
+      }
+
+      .boot-loader body {
+        display: flex;
+        flex-direction: row;
+      }
+
+      #loader-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        height: 100%;
+      }
+
+      #loader {
+        animation: loader 1s infinite ease-in-out;
+        -webkit-animation: loader 1s infinite ease-in-out;
+        animation-delay: -0.16s;
+        -webkit-animation-delay: -0.16s;
+        background: #ed7ac0;
+        color: #ed7ac0;
+        font-size: 6px;
+        height: 20px;
+        position: relative;
+        text-indent: -9999em;
+        transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        width: 1em;
+      }
+
+      #loader:before {
+        animation: loader 1s infinite ease-in-out;
+        -webkit-animation: loader 1s infinite ease-in-out;
+        animation-delay: -0.32s;
+        -webkit-animation-delay: -0.32s;
+        background: #ed7ac0;
+        content: '';
+        height: 20px;
+        left: -1.5em;
+        position: absolute;
+        top: 0;
+        width: 1em;
+      }
+
+      #loader:after {
+        animation: loader 1s infinite ease-in-out;
+        -webkit-animation: loader 1s infinite ease-in-out;
+        animation-delay: 0.08s;
+        -webkit-animation-delay: 0.08s;
+        background: #ed7ac0;
+        content: '';
+        height: 20px;
+        left: 1.5em;
+        position: absolute;
+        top: 0;
+        width: 1em;
+      }
+
+      @keyframes loader {
+        0%,
+        80%,
+        100% {
+          box-shadow: 0 0;
+          height: 20px;
+        }
+        40% {
+          box-shadow: 0 -2em;
+          height: 5em;
+        }
+      }
+
+      @-webkit-keyframes loader {
+        0%,
+        80%,
+        100% {
+          box-shadow: 0 0;
+          height: 20px;
+        }
+        40% {
+          box-shadow: 0 -2em;
+          height: 5em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <form
+      id="file-picker"
+      style="position: absolute; top: -1000px; left: -1000px"
+    >
+      <input type="file" />
+    </form>
+    <div id="loader-container">
+      <div id="loader"></div>
+    </div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>

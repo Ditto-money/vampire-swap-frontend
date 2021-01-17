@@ -1,0 +1,44 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    }
+  },
+  "rules": {
+    "semi": "error",
+    "comma-dangle": "off",
+    "no-console": "off",
+    "keyword-spacing": "warn",
+    "key-spacing": "error",
+    "prefer-const": "error",
+    "space-before-function-paren": ["error", "never"],
+    "space-before-blocks": ["warn", "always"],
+    "arrow-spacing": "warn",
+    "eqeqeq": ["error", "smart"],
+    "no-constant-condition": "off",
+    "no-useless-escape": "off",
+    "no-var": "warn",
+    "object-shorthand": "warn",
+    "no-restricted-globals": [
+      "error",
+      "event",
+      "Promise",
+      "fetch",
+      "history",
+      "location",
+      "print"
+    ],
+    "react/display-name": "off",
+    "quotes": ["error", "single"]
+  },
+  "extends": ["react-app"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "plugins": ["react"]
+}

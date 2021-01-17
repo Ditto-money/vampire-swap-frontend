@@ -1,8 +1,16 @@
-www:
-	@python2 -m SimpleHTTPServer 3001
+run: node_modules
+	@yarn start
 
 prd:
 	@git reset --hard HEAD^
 	@git pull
+	@yarn build
+	@rm -rf build-swap
+	@mv build build-swap
 
-.PHONY: www prd
+node_modules:
+	@yarn
+
+.PHONY: \
+	run \
+	prd
