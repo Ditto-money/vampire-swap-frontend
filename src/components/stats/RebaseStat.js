@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 import Paper from './Paper';
 import { useStats } from 'contexts/stats';
 import { useWallet } from 'contexts/wallet';
@@ -28,18 +28,27 @@ export default function() {
   };
 
   return (
-    <Paper variant="outlined" elevation={0}>
-      <div></div>
+    <Tooltip
+      title={
+        'Triggers the rebase. Try increasing the gas limit if your transaction fails.'
+      }
+      placement={'top'}
+    >
       <div>
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled={!cooldownExpired || isRebasing}
-          onClick={connectOrRebase}
-        >
-          {isRebasing ? 'REBASING...' : 'REBASE'}
-        </Button>
+        <Paper variant="outlined" elevation={0}>
+          <div></div>
+          <div>
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={!cooldownExpired || isRebasing}
+              onClick={connectOrRebase}
+            >
+              {isRebasing ? 'REBASING...' : 'REBASE'}
+            </Button>
+          </div>
+        </Paper>
       </div>
-    </Paper>
+    </Tooltip>
   );
 }
