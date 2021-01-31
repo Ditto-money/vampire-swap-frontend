@@ -58,7 +58,6 @@ export default () => {
         <Table aria-label="Rebases">
           <TableHead>
             <TableRow>
-              <TableCell>#</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Supply Adjustment %</TableCell>
               <TableCell>Price Before Rebase</TableCell>
@@ -70,9 +69,6 @@ export default () => {
             {rebases.map(rebase => (
               <TableRow key={rebase.timestamp}>
                 <TableCell component="th" scope="row">
-                  {rebase.index}
-                </TableCell>
-                <TableCell>
                   {moment
                     .unix(rebase.timestamp)
                     .local()
