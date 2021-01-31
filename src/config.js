@@ -11,9 +11,9 @@ export const IS_DEV = !!~window.location.href.indexOf('local');
 
 export const API_URL = IS_TESTNET
   ? 'https://ditto.money/api-testnet'
-  : // : IS_DEV
-    // ? 'http://localhost:5001'
-    'https://ditto.money/api';
+  : IS_DEV
+  ? 'http://localhost:5001'
+  : 'https://ditto.money/api';
 
 export const CONTRACTS = IS_TESTNET
   ? {

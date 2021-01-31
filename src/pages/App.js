@@ -16,6 +16,9 @@ import PriceChart from 'components/charts/PriceChart';
 import SupplyChart from 'components/charts/SupplyChart';
 import MarketCapChart from 'components/charts/MarketCapChart';
 
+import Rebases from 'components/Rebases';
+import Volumes from 'components/Volumes';
+
 const useStyles = makeStyles(theme => {
   return {
     container: {
@@ -60,6 +63,10 @@ export default function App() {
         <SupplyChart />
         <MarketCapChart />
       </Box>
+
+      <Rebases />
+
+      <Volumes />
 
       <ConnectWallet />
     </Box>
