@@ -76,12 +76,17 @@ export function useMuiTheme() {
         },
       },
       MuiPaper: {
-        root: {
+        rounded: {
           borderRadius: BORDER_RADIUS,
         },
       },
       MuiDialog: {
         paper: {
+          borderRadius: BORDER_RADIUS,
+        },
+      },
+      MuiPaginationItem: {
+        rounded: {
           borderRadius: BORDER_RADIUS,
         },
       },

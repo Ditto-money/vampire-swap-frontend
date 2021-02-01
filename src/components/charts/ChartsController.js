@@ -24,12 +24,12 @@ const useStyles = makeStyles(theme => {
       height: 30,
       cursor: 'pointer',
       '&:first-child': {
-        borderTopLeftRadius: BORDER_RADIUS / 2,
-        borderBottomLeftRadius: BORDER_RADIUS / 2,
+        borderTopLeftRadius: BORDER_RADIUS,
+        borderBottomLeftRadius: BORDER_RADIUS,
       },
       '&:last-child': {
-        borderTopRightRadius: BORDER_RADIUS / 2,
-        borderBottomRightRadius: BORDER_RADIUS / 2,
+        borderTopRightRadius: BORDER_RADIUS,
+        borderBottomRightRadius: BORDER_RADIUS,
       },
       '&:not(:last-child)': {
         borderRight: `1px solid ${color}`,
