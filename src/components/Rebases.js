@@ -60,8 +60,8 @@ export default () => {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>Supply Adjustment %</TableCell>
-              <TableCell>Price Before Rebase</TableCell>
-              <TableCell>Price After Rebase</TableCell>
+              <TableCell>Supply Before Rebase</TableCell>
+              <TableCell>Supply After Rebase</TableCell>
               <TableCell align="right">Block</TableCell>
             </TableRow>
           </TableHead>
@@ -78,9 +78,9 @@ export default () => {
                   {toFixed(rebase.supplyAdjustmentPercent, 1, 2)}%
                 </TableCell>
                 <TableCell>
-                  ${toFixed(rebase.priceBeforeRebase, 1, 2)}
+                  {toFixed(rebase.supplyBeforeRebase, 1, 2)}
                 </TableCell>
-                <TableCell>${toFixed(rebase.priceAfterRebase, 1, 2)}</TableCell>
+                <TableCell>{toFixed(rebase.supplyAfterRebase, 1, 2)}</TableCell>
                 <TableCell align="right">
                   <Link
                     href={`https://${
