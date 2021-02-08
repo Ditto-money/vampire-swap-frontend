@@ -8,6 +8,9 @@ import {
 } from '@material-ui/core/styles';
 import { CssBaseline } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
+import {
+  BrowserRouter as Router,
+} from "react-router-dom";
 
 import { ThemeProvider, useTheme, useMuiTheme } from 'contexts/theme';
 import { WalletProvider } from 'contexts/wallet';
@@ -53,30 +56,32 @@ function Shell() {
   }, [isDark]);
 
   return (
-    <MuiThemeProvider theme={muiTheme}>
-      <CssBaseline />
-      <SnackbarProvider
-        classes={{ root: classes.snackbar }}
-        maxSnack={4}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        content={(key, data) => (
-          <div>
-            <Notification id={key} notification={data} />
-          </div>
-        )}
-      >
-        <NotificationsProvider>
-          <WalletProvider>
-            <StatsProvider>
-              <App />
-            </StatsProvider>
-          </WalletProvider>
-        </NotificationsProvider>
-      </SnackbarProvider>
-    </MuiThemeProvider>
+    <Router>
+      <MuiThemeProvider theme={muiTheme}>
+        <CssBaseline />
+        <SnackbarProvider
+          classes={{ root: classes.snackbar }}
+          maxSnack={4}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          content={(key, data) => (
+            <div>
+              <Notification id={key} notification={data} />
+            </div>
+          )}
+        >
+          <NotificationsProvider>
+            <WalletProvider>
+              <StatsProvider>
+                <App />
+              </StatsProvider>
+            </WalletProvider>
+          </NotificationsProvider>
+        </SnackbarProvider>
+      </MuiThemeProvider>
+    </Router>
   );
 }
 
