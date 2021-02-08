@@ -1,6 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles(theme => {
     return {
@@ -17,25 +19,41 @@ const useStyles = makeStyles(theme => {
 
 export default function Navigation(props) {
     const classes = useStyles();
+    const list = (
+        <ul className={classes.list}>
+            <li className={classes.item}>
+                <Button color="secondary" onClick={() => props.setShowSection('stats')}>
+                    Price and supply statistics
+                </Button>
+            </li>
+            <li className={classes.item}>
+                <Button color="secondary" onClick={() => props.setShowSection('volume')}>
+                    Trading Volume
+                </Button>
+            </li>
+            <li className={classes.item}>
+                <Button color="secondary" onClick={() => props.setShowSection('rebase')}>
+                    Rebase history
+                </Button>
+            </li>
+        </ul>
+    )
     return (
-        <nav>
-            <ul className={classes.list}>
-                <li className={classes.item}>
-                    <Button color="secondary" onClick={() => props.setShowSection('stats')}>
-                        Price and supply statistics
-                    </Button>
-                </li>
-                <li className={classes.item}>
-                    <Button color="secondary" onClick={() => props.setShowSection('volume')}>
-                        Trading Volume
-                    </Button>
-                </li>
-                <li className={classes.item}>
-                    <Button color="secondary" onClick={() => props.setShowSection('rebase')}>
-                        Rebase history
-                    </Button>
-                </li>
-            </ul>
-        </nav>
+        <>
+            <Hidden smDown>
+                <nav>
+                    {list}
+                </nav>
+            </Hidden>
+            <Hidden mdUp>
+                <React.Fragment key='left'>
+                    <Drawer anchor='left' open={props.drawer} onClose={props.setDrawer}>
+                        <nav onClick={props.setDrawer} onKeyDown={props.setDrawer}>
+                            {list}
+                        </nav>
+                    </Drawer>
+                </React.Fragment>
+            </Hidden>
+        </>
     );
 }

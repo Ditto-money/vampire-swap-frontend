@@ -24,11 +24,20 @@ const useStyles = makeStyles(theme => {
     container: {
       display: 'grid',
       gap: '10px',
-      gridTemplateColumns: '1fr 4fr',
-      gridTemplateAreas: `
-      'header header'
-      'nav    content'
-      `,
+      [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: '1fr',
+        gridTemplateAreas: `
+        'header'
+        'content'
+        `
+      },
+      [theme.breakpoints.up('md')]: {
+        gridTemplateColumns: '1fr 4fr',
+        gridTemplateAreas: `
+        'header header'
+        'nav    content'
+        `,
+      },
     },
     headerContainer: {
       gridArea: 'header',
@@ -40,8 +49,7 @@ const useStyles = makeStyles(theme => {
     contentContainer: {
       gridArea: 'content',
       paddingTop: '100px',
-      margin: '0 10% 0 10%'
-
+      margin: '0 10% 0 10%',
     },
     statsContainer: {
       display: 'grid',
@@ -57,12 +65,17 @@ const useStyles = makeStyles(theme => {
 export default function App() {
   const classes = useStyles();
   const [showSection, setShowSection] = useState('stats')
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
   return (
     <Box className={classes.container}>
-      <Header className={classes.headerContainer} />
+      <Header className={classes.headerContainer} drawerToggle={handleDrawerToggle} />
       <aside className={classes.navContainer}>
-        <Navigation setShowSection={setShowSection} />
+        <Navigation setShowSection={setShowSection} drawer={drawerOpen} setDrawer={handleDrawerToggle} />
       </aside>
       <main className={classes.contentContainer}>
         

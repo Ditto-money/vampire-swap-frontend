@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import LightIcon from '@material-ui/icons/Brightness1';
 import DarkIcon from '@material-ui/icons/Brightness2';
+import MenuIcon from '@material-ui/icons/Menu';
+import Hidden from '@material-ui/core/Hidden';
 import { useTheme } from 'contexts/theme';
 import { useWallet } from 'contexts/wallet';
 import { APP_TITLE } from 'config';
@@ -30,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Component() {
+export default function Component(props) {
   const classes = useStyles();
   const { address, startConnecting, disconnect } = useWallet();
   const { isDark, toggleTheme } = useTheme();
@@ -41,6 +43,18 @@ export default function Component() {
   return (
     <AppBar position="fixed" color="inherit" className={classes.container}>
       <Toolbar color="inherit">
+        <Hidden mdUp>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={props.drawerToggle}
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
+
         <Typography variant="h6" className={'flex flex-grow'}>
           <div className={'flex flex-col'} href="/">
             {APP_TITLE}
