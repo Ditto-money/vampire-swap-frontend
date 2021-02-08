@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
+import {
+  BrowserRouter as Router,
+  useLocation,
+} from "react-router-dom";
 
 import Header from 'components/Header';
 import ConnectWallet from 'components/ConnectWallet';
@@ -64,7 +68,7 @@ const useStyles = makeStyles(theme => {
 
 export default function App() {
   const classes = useStyles();
-  const [showSection, setShowSection] = useState('stats')
+  let location = useLocation();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -72,37 +76,38 @@ export default function App() {
   };
 
   return (
-    <Box className={classes.container}>
-      <Header className={classes.headerContainer} drawerToggle={handleDrawerToggle} />
-      <aside className={classes.navContainer}>
-        <Navigation setShowSection={setShowSection} drawer={drawerOpen} setDrawer={handleDrawerToggle} />
-      </aside>
-      <main className={classes.contentContainer}>
-        
-        {showSection === 'stats' && 
-        <Box className={classes.statsContainer}>
-          <RebaseCooldownStat />
-          <PriceStat />
-          <SupplyStat />
-          <RebaseStat />
-          <PriceTargetStat />
-          <MarketCapStat />
-        </Box> 
-        }
+    <Router>
+      <Box className={classes.container}>
+        <Header className={classes.headerContainer} drawerToggle={handleDrawerToggle} />
+        <aside className={classes.navContainer}>
+          <Navigation drawer={drawerOpen} setDrawer={handleDrawerToggle} />
+        </aside>
+        <main className={classes.contentContainer}>
+          {location.hash === '#stats' && 
+          <Box className={classes.statsContainer}>
+            <RebaseCooldownStat />
+            <PriceStat />
+            <SupplyStat />
+            <RebaseStat />
+            <PriceTargetStat />
+            <MarketCapStat />
+          </Box> 
+          }
 
-        {showSection === 'volume' && 
-        <Box className={classes.chartsContainer}>
-          <PriceChart />
-          <SupplyChart />
-          <MarketCapChart />
-        </Box>
-        }
+          {location.hash === '#volume' && 
+          <Box className={classes.chartsContainer}>
+            <PriceChart />
+            <SupplyChart />
+            <MarketCapChart />
+          </Box>
+          }
 
-        {showSection === 'rebase' &&
-          <Rebases />
-        }
-        <ConnectWallet />
-      </main>
-    </Box>
+          {location.hash === '#rebase' &&
+            <Rebases />
+          }
+          <ConnectWallet />
+        </main>
+      </Box>
+    </Router>
   );
 }

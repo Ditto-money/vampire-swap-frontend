@@ -22,17 +22,17 @@ export default function Navigation(props) {
     const list = (
         <ul className={classes.list}>
             <li className={classes.item}>
-                <Button color="secondary" onClick={() => props.setShowSection('stats')}>
+                <Button color="secondary" href="#stats">
                     Price and supply statistics
                 </Button>
             </li>
             <li className={classes.item}>
-                <Button color="secondary" onClick={() => props.setShowSection('volume')}>
+                <Button color="secondary" href="#volume" >
                     Trading Volume
                 </Button>
             </li>
             <li className={classes.item}>
-                <Button color="secondary" onClick={() => props.setShowSection('rebase')}>
+                <Button color="secondary" href="#rebase">
                     Rebase history
                 </Button>
             </li>
