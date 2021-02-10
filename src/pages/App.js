@@ -9,40 +9,20 @@ const useStyles = makeStyles(theme => {
   return {
     container: {
       display: 'grid',
-      gap: '10px',
-      [theme.breakpoints.down('sm')]: {
-        gridTemplateColumns: '1fr',
-        gridTemplateAreas: `
-        'header'
-        'content'
-        `
-      },
-      [theme.breakpoints.up('md')]: {
-        gridTemplateColumns: '1fr 4fr',
-        gridTemplateAreas: `
-        'header header'
-        'nav    content'
-        `,
-      },
+
     },
     headerContainer: {
-      gridArea: 'header',
+      // gridArea: 'header',
     },
     navContainer: {
-      gridArea: 'nav',
-      paddingTop: '100px',
+      // gridArea: 'nav',
+
     },
     contentContainer: {
-      gridArea: 'content',
+      // gridArea: 'content',
       paddingTop: '100px',
-      margin: '0 10% 0 10%',
     },
     statsContainer: {
-      display: 'grid',
-      gridTemplateRows: '1fr 1fr',
-      gridTemplateColumns: '1fr 1fr 1fr',
-      rowGap: '16px',
-      columnGap: '16px',
     },
     chartsContainer: {},
   };
@@ -59,10 +39,10 @@ export default function App() {
   return (
     <Box className={classes.container}>
       <Header className={classes.headerContainer} drawerToggle={handleDrawerToggle} />
-      <aside className={classes.navContainer}>
-        </aside>
-        <main className={classes.contentContainer}>
+      <main className={classes.contentContainer}>
+        <p>Content</p>
       </main>
+
       <ConnectWallet />
     </Box>
   );

@@ -1,6 +1,6 @@
-export const APP_SLUG = 'ditto';
+export const APP_SLUG = 'ditto_swaptobsc';
 
-export const APP_TITLE = 'Ditto Dashboard';
+export const APP_TITLE = 'Ditto    |    Swap to BSC';
 
 export const CACHE_WALLET_KEY = 'wallet';
 
@@ -29,9 +29,9 @@ export const CONTRACTS = IS_TESTNET
 
 export const INFURA_ID = '1e8cc8aac2bd47f98da31fd2846d6132';
 
-export const NETWORK_NAME = IS_TESTNET ? 'testnet' : 'mainnet';
+export const NETWORK_NAME = IS_TESTNET ? 'ropsten' : 'mainnet';
 
-export const NETWORK_CHAIN_ID = IS_TESTNET ? 97 : 56;
+export const NETWORK_CHAIN_ID = IS_TESTNET ? 3 : 1;
 
 export const READ_WEB3_PROVIDER = IS_TESTNET
   ? 'https://data-seed-prebsc-1-s1.binance.org:8545'

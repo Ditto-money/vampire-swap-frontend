@@ -29,6 +29,14 @@ export function WalletProvider({ children }) {
     [chainId]
   );
 
+  React.useEffect(() => {
+    (async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      let { chainId: c } = await provider.getNetwork();
+      setChainId(c);
+    })();
+  }, [chainId]);
+
   const tokenContract = React.useMemo(
     () =>
       new ethers.Contract(CONTRACTS.token, TOKEN_ABI, signer || READ_PROVIDER),
