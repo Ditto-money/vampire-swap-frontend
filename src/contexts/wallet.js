@@ -5,6 +5,7 @@ import {
   READ_WEB3_PROVIDER,
   CACHE_WALLET_KEY,
   NETWORK_CHAIN_ID,
+  AMPL
 } from 'config';
 import cache from 'utils/cache';
 import TOKEN_ABI from 'abis/token.json';
@@ -32,6 +33,12 @@ export function WalletProvider({ children }) {
   React.useEffect(() => {
     (async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      console.log(signer)
+      setSigner(signer)
+      const address = await signer.getAddress();
+      console.log(address)
+      setAddress(address);
       let { chainId: c } = await provider.getNetwork();
       setChainId(c);
     })();
@@ -39,29 +46,29 @@ export function WalletProvider({ children }) {
 
   const tokenContract = React.useMemo(
     () =>
-      new ethers.Contract(CONTRACTS.token, TOKEN_ABI, signer || READ_PROVIDER),
+      new ethers.Contract(AMPL.token, TOKEN_ABI, signer || READ_PROVIDER),
     [signer]
   );
 
-  const controllerContract = React.useMemo(
-    () =>
-      new ethers.Contract(
-        CONTRACTS.controller,
-        CONTROLLER_ABI,
-        signer || READ_PROVIDER
-      ),
-    [signer]
-  );
+  // const controllerContract = React.useMemo(
+  //   () =>
+  //     new ethers.Contract(
+  //       CONTRACTS.controller,
+  //       CONTROLLER_ABI,
+  //       signer || READ_PROVIDER
+  //     ),
+  //   [signer]
+  // );
 
-  const oracleContract = React.useMemo(
-    () =>
-      new ethers.Contract(
-        CONTRACTS.oracle,
-        ORACLE_ABI,
-        signer || READ_PROVIDER
-      ),
-    [signer]
-  );
+  // const oracleContract = React.useMemo(
+  //   () =>
+  //     new ethers.Contract(
+  //       CONTRACTS.oracle,
+  //       ORACLE_ABI,
+  //       signer || READ_PROVIDER
+  //     ),
+  //   [signer]
+  // );
 
   const startConnecting = () => setIsConnecting(true);
   const stopConnecting = () => setIsConnecting(false);
@@ -169,8 +176,8 @@ export function WalletProvider({ children }) {
 
         isOnWrongNetwork,
         tokenContract,
-        controllerContract,
-        oracleContract,
+        // controllerContract,
+        // oracleContract,
       }}
     >
       {children}
@@ -199,8 +206,8 @@ export function useWallet() {
 
     isOnWrongNetwork,
     tokenContract,
-    controllerContract,
-    oracleContract,
+    // controllerContract,
+    // oracleContract,
   } = context;
 
   return {
@@ -219,7 +226,7 @@ export function useWallet() {
 
     isOnWrongNetwork,
     tokenContract,
-    controllerContract,
-    oracleContract,
+    // controllerContract,
+    // oracleContract,
   };
 }

@@ -74,9 +74,9 @@ function Shell() {
         >
           <NotificationsProvider>
             <WalletProvider>
-              <StatsProvider>
+              {/* <StatsProvider> */}
                 <App />
-              </StatsProvider>
+              {/* </StatsProvider> */}
             </WalletProvider>
           </NotificationsProvider>
         </SnackbarProvider>
