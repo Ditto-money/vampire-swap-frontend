@@ -10,6 +10,20 @@ import { useStats } from 'contexts/stats';
 const useStyles = makeStyles(theme => {
   const color = theme.palette.borderColor;
   return {
+    buttonsContainer: {
+      display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        alignItems: 'center'
+      },
+    },
+    typesButtonsContainer: {
+      marginLeft: '16px',
+      [theme.breakpoints.down('sm')]: {
+        marginLeft: 0,
+        marginTop: '5px'
+      },
+    },
     container: {
       display: 'flex',
       border: `1px solid ${color}`,
@@ -51,7 +65,7 @@ export default function() {
   } = useStats();
 
   return (
-    <div className="flex">
+    <div className={classes.buttonsContainer}>
       <Box>
         <Paper className={classes.container}>
           {DURATIONS_ARRAY.map(([duration, name]) => (
@@ -67,7 +81,7 @@ export default function() {
           ))}
         </Paper>
       </Box>
-      <Box ml={2}>
+      <Box className={classes.typesButtonsContainer}>
         <Paper className={classes.container}>
           {TYPES_ARRAY.map(([type, name]) => (
             <div

@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => {
         gap: '0'
       },
       [theme.breakpoints.up('md')]: {
-        gridTemplateColumns: '1fr 4fr',
+        gridTemplateColumns: '250px 1fr',
         gridTemplateAreas: `
         'header header'
         'nav    content'
@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => {
     contentContainer: {
       gridArea: 'content',
       paddingTop: '100px',
-      margin: '0 10% 0 10%',
+      margin: '0 5% 0 5%',
       [theme.breakpoints.down('sm')]: {
         margin: '2%',
       },
@@ -62,14 +62,15 @@ const useStyles = makeStyles(theme => {
     statsContainer: {
       display: 'grid',
       gridTemplateRows: '1fr 1fr',
-      gridTemplateColumns: '1fr 1fr 1fr',
+      gridTemplateColumns: '1fr 1fr',
       rowGap: '16px',
       columnGap: '16px',
       [theme.breakpoints.down('sm')]: {
         gridTemplateColumns: '1fr',
       },
     },
-    chartsContainer: {},
+    chartsContainer: {
+    },
   };
 });
 
@@ -98,16 +99,19 @@ export default function App() {
             <RebaseStat />
             <PriceTargetStat />
             <MarketCapStat />
+            <PriceChart />
+            <SupplyChart />
+            <MarketCapChart />
           </Box> 
           }
 
-          {location.hash === '#volume' && 
+          {/* {location.hash === '#volume' && 
           <Box className={classes.chartsContainer}>
             <PriceChart />
             <SupplyChart />
             <MarketCapChart />
           </Box>
-          }
+          } */}
 
           {location.hash === '#rebase' &&
             <Rebases />

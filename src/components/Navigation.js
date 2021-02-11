@@ -23,14 +23,14 @@ export default function Navigation(props) {
         <ul className={classes.list}>
             <li className={classes.item}>
                 <Button color="secondary" href="#stats">
-                    Price and supply statistics
+                    Price and supply
                 </Button>
             </li>
-            <li className={classes.item}>
+            {/* <li className={classes.item}>
                 <Button color="secondary" href="#volume" >
                     Trading Volume
                 </Button>
-            </li>
+            </li> */}
             <li className={classes.item}>
                 <Button color="secondary" href="#rebase">
                     Rebase history
