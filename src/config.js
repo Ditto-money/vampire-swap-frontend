@@ -9,11 +9,13 @@ export const BORDER_RADIUS = 8;
 export const IS_TESTNET = !!~window.location.href.indexOf('testnet');
 export const IS_DEV = !!~window.location.href.indexOf('local');
 
-export const API_URL = IS_TESTNET
-  ? 'https://ditto.money/api-testnet'
-  : IS_DEV
-  ? 'http://localhost:5001'
-  : 'https://ditto.money/api';
+export const API_URL =
+  process.env.REACT_APP_API_URL ||
+  (IS_TESTNET
+    ? 'https://ditto.money/api-testnet'
+    : IS_DEV
+    ? 'http://localhost:5001'
+    : 'https://ditto.money/api');
 
 export const CONTRACTS = IS_TESTNET
   ? {
