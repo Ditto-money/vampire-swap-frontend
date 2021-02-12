@@ -2,10 +2,8 @@
 
 Dashboard frontend for the Ditto Elastic Supply Currency.
 
-# Run
+# Getting started
 
-```
-    make
-```
-
+Copy `.env.sample` to `.env` and update accordingly
+Run `make`
 Then visit http://localhost:3001
