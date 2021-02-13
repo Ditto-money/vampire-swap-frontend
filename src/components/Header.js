@@ -28,8 +28,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: 10,
     [theme.breakpoints.down('sm')]: {
       display: 'none',
-    },
+    }
   },
+  switchMessage: {
+    marginRight: 20
+  } 
 }));
 
 export default function Component(props) {
@@ -56,11 +59,8 @@ export default function Component(props) {
         </Hidden>
 
         <Typography variant="h6" className={'flex flex-grow'}>
-          <div className={'flex flex-col'} href="/">
-            {APP_TITLE}
-          </div>
+          {APP_TITLE}
         </Typography>
-
         {address ? (
           <>
             &nbsp;
@@ -70,7 +70,7 @@ export default function Component(props) {
             </Button>
           </>
         ) : (
-          <Button color="secondary" onClick={startConnecting}>
+            <Button color="secondary" onClick={startConnecting}>
             Connect Wallet
           </Button>
         )}
