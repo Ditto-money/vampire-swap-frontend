@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { ethers } from 'ethers';
 import {
   NETWORK_NAME
 } from 'config';
@@ -13,8 +14,6 @@ import Header from 'components/Header';
 import ConnectWallet from 'components/ConnectWallet';
 
 import { useWallet } from 'contexts/wallet';
-import { Big, isZero } from 'utils/big-number';
-import { BigNumber, ethers } from 'ethers';
 
 
 
@@ -62,13 +61,13 @@ const useStyles = makeStyles(theme => {
 export default function App() {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [inputTokens, setInputTokens] = React.useState([])
-  const [selectedToken, setSelectedToken] = React.useState(null)
-  const [dittoOutputAmount, setDittoOutputAmount] = React.useState(0)
-  const [loading, setLoading] = React.useState(true)
-  const [dittoRemaining, setDittoRemaining] = React.useState()
-  const [swapState, setSwapState] = React.useState('initial')
-  const [inputTokenAmount, setInputTokenAmount] = React.useState(0)
+  const [inputTokens, setInputTokens] = React.useState([]);
+  const [selectedToken, setSelectedToken] = React.useState(null);
+  const [dittoOutputAmount, setDittoOutputAmount] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
+  const [dittoRemaining, setDittoRemaining] = React.useState();
+  const [swapState, setSwapState] = React.useState('initial');
+  const [inputTokenAmount, setInputTokenAmount] = React.useState(0);
 
 
   const { address, availableTokens, swapContract, isOnWrongNetwork } = useWallet();
@@ -76,33 +75,34 @@ export default function App() {
 
   useEffect(() => {
     const loadPrices = async () => {
-      console.log(swapContract)
+      console.log(swapContract);
       if (swapContract) {
         const usdRate = await swapContract.dittoUSDRate();
-        console.log('usdrate==================')
-        console.log(usdRate.toNumber())
+        console.log('usdrate==================');
+        console.log(usdRate.toNumber());
         const dittoRemainingInSwap = await swapContract.remainingTokensInActiveSwap();
-        console.log('dittoremaining==================')
-        console.log(dittoRemainingInSwap.toNumber())
+        console.log('dittoremaining==================');
+        console.log(dittoRemainingInSwap.toNumber());
         const dittoRemainingInSwapForUser = await swapContract.remainingTokensForUser(address);
-        console.log('dittoremainingforuse==================')
-        console.log(dittoRemainingInSwapForUser.toNumber())
-        setDittoRemaining(Math.min(dittoRemainingInSwap, dittoRemainingInSwapForUser))
+        console.log('dittoremainingforuse==================');
+        console.log(dittoRemainingInSwapForUser.toNumber());
+        setDittoRemaining(Math.min(dittoRemainingInSwap, dittoRemainingInSwapForUser));
       }
 
       if (availableTokens) {
         const finalInputTokens = [];
-        for (let token of availableTokens) {
-          token.balance = ethers.utils.formatUnits(await token.tokenContract.balanceOf(address), token.decimals)
-          finalInputTokens.push(token)
+        for (const token of availableTokens) {
+          token.balance = ethers.utils.formatUnits(await token.tokenContract.balanceOf(address), token.decimals);
+          finalInputTokens.push(token);
         }
-        setInputTokens(finalInputTokens)
-        setSelectedToken(finalInputTokens[0])
-        setLoading(false)
+        setInputTokens(finalInputTokens);
+        setSelectedToken(finalInputTokens[0]);
+        setLoading(false);
       }
-    }
+    };
     loadPrices();
-  }, [availableTokens])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableTokens]);
 
 
   const handleDrawerToggle = () => {
@@ -116,63 +116,63 @@ export default function App() {
   const calculateOutputAmount = async (inputAmount) => {
     if (inputAmount) {
       const convertedInputAmount = ethers.utils.parseUnits(inputAmount, selectedToken.decimals);
-      const output = await swapContract.getDittoOutputAmount(convertedInputAmount, selectedToken.address)
+      const output = await swapContract.getDittoOutputAmount(convertedInputAmount, selectedToken.address);
       setDittoOutputAmount(ethers.utils.formatUnits(output, 9));
-      setInputTokenAmount(convertedInputAmount)
+      setInputTokenAmount(convertedInputAmount);
     } else {
-      setDittoOutputAmount(0)
-      setInputTokenAmount(0)
+      setDittoOutputAmount(0);
+      setInputTokenAmount(0);
     }
-  }
+  };
 
   const approveSwap = async () => {
     if (parseFloat(inputTokenAmount) > 0) {
       const amount = ethers.utils.parseUnits(`${inputTokenAmount}.0`, selectedToken.decimals);
       try {
-        setSwapState('approvingSwap')
-        const approveAllowanceTx = await selectedToken.tokenContract.approve(swapContract.address, amount)
-        console.log(approveAllowanceTx.hash)
-        await approveAllowanceTx.wait()
-        setSwapState('swapApproved')
+        setSwapState('approvingSwap');
+        const approveAllowanceTx = await selectedToken.tokenContract.approve(swapContract.address, amount);
+        console.log(approveAllowanceTx.hash);
+        await approveAllowanceTx.wait();
+        setSwapState('swapApproved');
       } catch (error) {
         console.log(error);
-        setSwapState('error')
+        setSwapState('error');
       }
     }
-  }
+  };
 
   const swap = async () => {
     try {
-      setSwapState('swapLoading')
-      const swapTx = await swapContract.swap(selectedToken.address, inputTokenAmount)
-      console.log('sent', swapTx.hash)
-      await swapTx.wait()
-      setSwapState('swapComplete')
+      setSwapState('swapLoading');
+      const swapTx = await swapContract.swap(selectedToken.address, inputTokenAmount);
+      console.log('sent', swapTx.hash);
+      await swapTx.wait();
+      setSwapState('swapComplete');
     } catch (error) {
-      console.log(error)
-      setSwapState('error')
+      console.log(error);
+      setSwapState('error');
     }
 
-  }
+  };
 
   const swapButtonState = () => {
     switch (swapState) {
       case 'initial':
-        return <Button onClick={() => approveSwap()}>Approve Swap</Button>
+        return <Button onClick={() => approveSwap()}>Approve Swap</Button>;
       case 'approvingSwap':
-        return <Button>Approving Swap</Button>
+        return <Button>Approving Swap</Button>;
       case 'swapApproved':
-        return <Button onClick={() => swap()}>Swap for Ditto</Button>
+        return <Button onClick={() => swap()}>Swap for Ditto</Button>;
       case 'swapLoading':
-        return <Button>Swapping</Button>
+        return <Button>Swapping</Button>;
       case 'swapComplete':
-        return <Button>Swap Complete</Button>
+        return <Button>Swap Complete</Button>;
       case 'error':
-        return <p>Error occured</p>
+        return <p>Error occured</p>;
       default:
         return null;
     }
-  }
+  };
 
 
 
@@ -198,13 +198,13 @@ export default function App() {
                       inputTokens.map((token) => {
                         return (
                           <MenuItem value={token}>{token.symbol}</MenuItem>
-                        )
+                        );
                       })
                     }
                   </Select>
                 </InputAdornment>,
               onChange: (e) => {
-                calculateOutputAmount(e.target.value)
+                calculateOutputAmount(e.target.value);
               },
               inputProps: { min: 0 },
               disabled: loading

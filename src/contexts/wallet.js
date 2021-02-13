@@ -23,40 +23,41 @@ export function WalletProvider({ children }) {
   const [chainId, setChainId] = React.useState(null);
   const [signer, setSigner] = React.useState(null);
   const [address, setAddress] = React.useState(null);
-  const [availableTokens, setAvailableTokens] = React.useState(null)
-  const [swapContract, setSwapContract] = React.useState(null)
+  const [availableTokens, setAvailableTokens] = React.useState(null);
+  const [swapContract, setSwapContract] = React.useState(null);
 
   React.useEffect(() => {
     (async () => {
       if (signer) {
-        console.log(swapContract)
-        const numberOfInputs = await swapContract.numberOfInputs()
-        const finalAvailableTokens = []
+        console.log(swapContract);
+        const numberOfInputs = await swapContract.numberOfInputs();
+        const finalAvailableTokens = [];
         for (let tokenIndex = 0; tokenIndex < numberOfInputs.toNumber(); tokenIndex++) {
-          const address = await swapContract.inputAddresses(tokenIndex)
-          const tokenContract = new ethers.Contract(address, TOKEN_ABI, signer)
-          const symbol = await tokenContract.symbol()
-          const decimals = await tokenContract.decimals()
+          const address = await swapContract.inputAddresses(tokenIndex);
+          const tokenContract = new ethers.Contract(address, TOKEN_ABI, signer);
+          const symbol = await tokenContract.symbol();
+          const decimals = await tokenContract.decimals();
           finalAvailableTokens.push({
             address,
             tokenContract,
             symbol,
             decimals
-          })
+          });
         }
-        setAvailableTokens(finalAvailableTokens)
+        setAvailableTokens(finalAvailableTokens);
       }
     })();
-  }, [swapContract])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [swapContract]);
 
   React.useEffect(() => {
     (async () => {
       if (signer) {
-        const newSwapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, SWAP_ABI, signer)
-        setSwapContract(newSwapContract)
+        const newSwapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, SWAP_ABI, signer);
+        setSwapContract(newSwapContract);
       }
     })();
-  }, [signer])
+  }, [signer]);
 
 
   const isOnWrongNetwork = React.useMemo(
@@ -64,11 +65,7 @@ export function WalletProvider({ children }) {
     [chainId]
   );
 
-  React.useEffect(() => {
-    console.log(chainId)
-
-  }, [chainId])
-
+  
   const startConnecting = () => setIsConnecting(true);
   const stopConnecting = () => setIsConnecting(false);
 

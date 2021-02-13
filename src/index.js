@@ -10,13 +10,11 @@ import { CssBaseline } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import {
   BrowserRouter as Router,
-} from "react-router-dom";
+} from 'react-router-dom';
 
 import { ThemeProvider, useTheme, useMuiTheme } from 'contexts/theme';
 import { WalletProvider } from 'contexts/wallet';
 import { NotificationsProvider } from 'contexts/notifications';
-import { StatsProvider } from 'contexts/stats';
-// import { SwapProvider } from 'contexts/swap'
 import Notification from 'components/Notification';
 import * as serviceWorker from 'serviceWorker';
 
