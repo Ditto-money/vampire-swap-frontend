@@ -1,16 +1,15 @@
 import React from 'react';
 import { ethers } from 'ethers';
 import {
-  CONTRACTS,
   READ_WEB3_PROVIDER,
   CACHE_WALLET_KEY,
   NETWORK_CHAIN_ID,
-  AMPL
+  SWAP_CONTRACT_ADDRESS
 } from 'config';
 import cache from 'utils/cache';
 import TOKEN_ABI from 'abis/token.json';
-import CONTROLLER_ABI from 'abis/controller.json';
-import ORACLE_ABI from 'abis/oracle.json';
+import SWAP_ABI from 'abis/swap.json';
+
 
 export const READ_PROVIDER = new ethers.providers.JsonRpcProvider(
   READ_WEB3_PROVIDER
@@ -24,6 +23,41 @@ export function WalletProvider({ children }) {
   const [chainId, setChainId] = React.useState(null);
   const [signer, setSigner] = React.useState(null);
   const [address, setAddress] = React.useState(null);
+  const [availableTokens, setAvailableTokens] = React.useState(null)
+  const [swapContract, setSwapContract] = React.useState(null)
+
+  React.useEffect(() => {
+    (async () => {
+      if (signer) {
+        console.log(swapContract)
+        const numberOfInputs = await swapContract.numberOfInputs()
+        const finalAvailableTokens = []
+        for (let tokenIndex = 0; tokenIndex < numberOfInputs.toNumber(); tokenIndex++) {
+          const address = await swapContract.inputAddresses(tokenIndex)
+          const tokenContract = new ethers.Contract(address, TOKEN_ABI, signer)
+          const symbol = await tokenContract.symbol()
+          const decimals = await tokenContract.decimals()
+          finalAvailableTokens.push({
+            address,
+            tokenContract,
+            symbol,
+            decimals
+          })
+        }
+        setAvailableTokens(finalAvailableTokens)
+      }
+    })();
+  }, [swapContract])
+
+  React.useEffect(() => {
+    (async () => {
+      if (signer) {
+        const newSwapContract = new ethers.Contract(SWAP_CONTRACT_ADDRESS, SWAP_ABI, signer)
+        setSwapContract(newSwapContract)
+      }
+    })();
+  }, [signer])
+
 
   const isOnWrongNetwork = React.useMemo(
     () => chainId && chainId !== NETWORK_CHAIN_ID,
@@ -31,44 +65,9 @@ export function WalletProvider({ children }) {
   );
 
   React.useEffect(() => {
-    (async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      console.log(signer)
-      setSigner(signer)
-      const address = await signer.getAddress();
-      console.log(address)
-      setAddress(address);
-      let { chainId: c } = await provider.getNetwork();
-      setChainId(c);
-    })();
-  }, [chainId]);
+    console.log(chainId)
 
-  const tokenContract = React.useMemo(
-    () =>
-      new ethers.Contract(AMPL.token, TOKEN_ABI, signer || READ_PROVIDER),
-    [signer]
-  );
-
-  // const controllerContract = React.useMemo(
-  //   () =>
-  //     new ethers.Contract(
-  //       CONTRACTS.controller,
-  //       CONTROLLER_ABI,
-  //       signer || READ_PROVIDER
-  //     ),
-  //   [signer]
-  // );
-
-  // const oracleContract = React.useMemo(
-  //   () =>
-  //     new ethers.Contract(
-  //       CONTRACTS.oracle,
-  //       ORACLE_ABI,
-  //       signer || READ_PROVIDER
-  //     ),
-  //   [signer]
-  // );
+  }, [chainId])
 
   const startConnecting = () => setIsConnecting(true);
   const stopConnecting = () => setIsConnecting(false);
@@ -175,9 +174,9 @@ export function WalletProvider({ children }) {
         connectTrust,
 
         isOnWrongNetwork,
-        tokenContract,
-        // controllerContract,
-        // oracleContract,
+        availableTokens,
+
+        swapContract
       }}
     >
       {children}
@@ -205,9 +204,9 @@ export function useWallet() {
     connectTrust,
 
     isOnWrongNetwork,
-    tokenContract,
-    // controllerContract,
-    // oracleContract,
+    availableTokens,
+
+    swapContract
   } = context;
 
   return {
@@ -225,8 +224,8 @@ export function useWallet() {
     connectTrust,
 
     isOnWrongNetwork,
-    tokenContract,
-    // controllerContract,
-    // oracleContract,
+    availableTokens,
+
+    swapContract
   };
 }

@@ -32,9 +32,11 @@ export const AMPL = {
   name: 'AMPL'
 }
 
+export const SWAP_CONTRACT_ADDRESS = '0xFDaCD496EfFB198C81Fb5E74F156e889f4ecCF91'
+
 export const INFURA_ID = '1e8cc8aac2bd47f98da31fd2846d6132';
 
-export const NETWORK_NAME = IS_TESTNET || IS_DEV ? 'ropsten' : 'mainnet';
+export const NETWORK_NAME = IS_TESTNET || IS_DEV ? 'Ethereum Testnet Ropsten' : 'Ethereum Mainnet';
 
 export const NETWORK_CHAIN_ID = IS_TESTNET || IS_DEV ? 3 : 1;
 

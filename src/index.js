@@ -16,6 +16,7 @@ import { ThemeProvider, useTheme, useMuiTheme } from 'contexts/theme';
 import { WalletProvider } from 'contexts/wallet';
 import { NotificationsProvider } from 'contexts/notifications';
 import { StatsProvider } from 'contexts/stats';
+// import { SwapProvider } from 'contexts/swap'
 import Notification from 'components/Notification';
 import * as serviceWorker from 'serviceWorker';
 
@@ -75,7 +76,9 @@ function Shell() {
           <NotificationsProvider>
             <WalletProvider>
               {/* <StatsProvider> */}
+              {/* <SwapProvider> */}
                 <App />
+              {/* </SwapProvider> */}
               {/* </StatsProvider> */}
             </WalletProvider>
           </NotificationsProvider>

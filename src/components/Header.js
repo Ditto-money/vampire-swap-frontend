@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Component(props) {
   const classes = useStyles();
-  const { address, startConnecting, disconnect, isOnWrongNetwork } = useWallet();
+  const { address, startConnecting, disconnect } = useWallet();
   const { isDark, toggleTheme } = useTheme();
 
   const shortAddress =
@@ -61,7 +61,6 @@ export default function Component(props) {
         <Typography variant="h6" className={'flex flex-grow'}>
           {APP_TITLE}
         </Typography>
-        {isOnWrongNetwork && <Typography variant="body2" className={classes.switchMessage} >Switch to Ethereum Mainnet to connect your wallet</Typography>}
         {address ? (
           <>
             &nbsp;
@@ -71,7 +70,7 @@ export default function Component(props) {
             </Button>
           </>
         ) : (
-            <Button color="secondary" onClick={startConnecting} disabled={isOnWrongNetwork}>
+            <Button color="secondary" onClick={startConnecting}>
             Connect Wallet
           </Button>
         )}
