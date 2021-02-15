@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 import { ethers } from 'ethers';
+import { debounce } from 'lodash';
 import {
   NETWORK_NAME
 } from 'config';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, InputAdornment, TextField, Typography, Button } from '@material-ui/core';
-
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-
+import { Box, InputAdornment, TextField, Typography } from '@material-ui/core';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 import Header from 'components/Header';
 import ConnectWallet from 'components/ConnectWallet';
+import SwapButton from 'components/SwapButton';
+import TokenInputField from 'components/fields/TokenInputField';
 
 import { useWallet } from 'contexts/wallet';
 
@@ -43,17 +43,20 @@ const useStyles = makeStyles(theme => {
       alignItems: 'center',
     },
     swapInput: {
-      marginTop: 50,
+      marginTop: 30,
       display: 'flex',
       flexDirection: 'column'
     },
     recieveInput: {
-      marginTop: 100,
+      marginTop: 50,
       display: 'flex',
       flexDirection: 'column'
     },
     availableBalanceCaption: {
       textAlign: 'right'
+    },
+    swapButton: {
+      marginTop: 50,
     }
   };
 });
@@ -114,6 +117,9 @@ export default function App() {
   };
 
   const calculateOutputAmount = async (inputAmount) => {
+    if (swapState === 'approvingSwap' || 'swapApproved') {
+      setSwapState('initial');
+    }
     if (inputAmount) {
       const convertedInputAmount = ethers.utils.parseUnits(inputAmount, selectedToken.decimals);
       const output = await swapContract.getDittoOutputAmount(convertedInputAmount, selectedToken.address);
@@ -124,6 +130,8 @@ export default function App() {
       setInputTokenAmount(0);
     }
   };
+
+  const handleInputAmount = debounce((inputAmount) => calculateOutputAmount(inputAmount), 500);
 
   const approveSwap = async () => {
     if (parseFloat(inputTokenAmount) > 0) {
@@ -155,27 +163,6 @@ export default function App() {
 
   };
 
-  const swapButtonState = () => {
-    switch (swapState) {
-      case 'initial':
-        return <Button onClick={() => approveSwap()}>Approve Swap</Button>;
-      case 'approvingSwap':
-        return <Button>Approving Swap</Button>;
-      case 'swapApproved':
-        return <Button onClick={() => swap()}>Swap for Ditto</Button>;
-      case 'swapLoading':
-        return <Button>Swapping</Button>;
-      case 'swapComplete':
-        return <Button>Swap Complete</Button>;
-      case 'error':
-        return <p>Error occured</p>;
-      default:
-        return null;
-    }
-  };
-
-
-
   return (
     <Box className={classes.container}>
       <Header className={classes.headerContainer} drawerToggle={handleDrawerToggle} />
@@ -184,32 +171,9 @@ export default function App() {
         <form className={classes.formContainer} noValidate autoComplete="off">
           <div className={classes.swapInput}>
             {selectedToken && <Typography variant="caption" className={classes.availableBalanceCaption}>Available balance:{`${selectedToken.balance}`}</Typography>}
-            <TextField id="swap-input" label={`${loading ? '' : 'swap'}`} type="number" variant="outlined" InputProps={{
-              endAdornment:
-                <InputAdornment position="end">
-                  <Select
-                    value={selectedToken}
-                    onChange={handleTokenChange}
-                    displayEmpty
-                    className={classes.selectEmpty}
-                    inputProps={{ 'aria-label': 'available tokens' }}
-                  >
-                    {
-                      inputTokens.map((token) => {
-                        return (
-                          <MenuItem value={token}>{token.symbol}</MenuItem>
-                        );
-                      })
-                    }
-                  </Select>
-                </InputAdornment>,
-              onChange: (e) => {
-                calculateOutputAmount(e.target.value);
-              },
-              inputProps: { min: 0 },
-              disabled: loading
-            }} />
+            <TokenInputField loading={loading} selectedToken={selectedToken} handleTokenChange={handleTokenChange} inputTokens={inputTokens} handleInputAmount={handleInputAmount} swapState={swapState} />
           </div>
+          <ArrowDownwardIcon color="secondary" style={{ marginTop: 30, fontSize: 50 }} />
           <div className={classes.recieveInput}>
             {dittoRemaining && <Typography variant="caption" className={classes.availableBalanceCaption}>DITTO remaining:{`${dittoRemaining}`}</Typography>}
             <TextField id="recieve-input" label="recieve" variant="outlined" defaultValue="0" InputProps={{
@@ -222,7 +186,9 @@ export default function App() {
               disabled: loading
             }} />
           </div>
-          {swapButtonState()}
+          <div className={classes.swapButton}>
+            <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} />
+          </div>
         </form>
       </main>
       <ConnectWallet />
