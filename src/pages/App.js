@@ -5,17 +5,17 @@ import {
   NETWORK_NAME
 } from 'config';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, InputAdornment, TextField, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 import Header from 'components/Header';
 import ConnectWallet from 'components/ConnectWallet';
 import SwapButton from 'components/SwapButton';
 import TokenInputField from 'components/fields/TokenInputField';
+import TokenOutputField from 'components/fields/TokenOutputField';
+
 
 import { useWallet } from 'contexts/wallet';
-
-
 
 
 const useStyles = makeStyles(theme => {
@@ -71,6 +71,7 @@ export default function App() {
   const [dittoRemaining, setDittoRemaining] = React.useState();
   const [swapState, setSwapState] = React.useState('initial');
   const [inputTokenAmount, setInputTokenAmount] = React.useState(0);
+  const [usdDittoRate, setUsdDittoRate] = React.useState(0);
 
 
   const { address, availableTokens, swapContract, isOnWrongNetwork } = useWallet();
@@ -78,18 +79,18 @@ export default function App() {
 
   useEffect(() => {
     const loadPrices = async () => {
-      console.log(swapContract);
       if (swapContract) {
         const usdRate = await swapContract.dittoUSDRate();
-        console.log('usdrate==================');
-        console.log(usdRate.toNumber());
+        setUsdDittoRate(ethers.utils.formatUnits(usdRate.toString(), 3));
+        console.log(usdDittoRate)
         const dittoRemainingInSwap = await swapContract.remainingTokensInActiveSwap();
-        console.log('dittoremaining==================');
-        console.log(dittoRemainingInSwap.toNumber());
         const dittoRemainingInSwapForUser = await swapContract.remainingTokensForUser(address);
-        console.log('dittoremainingforuse==================');
-        console.log(dittoRemainingInSwapForUser.toNumber());
-        setDittoRemaining(Math.min(dittoRemainingInSwap, dittoRemainingInSwapForUser));
+        setDittoRemaining(
+          Math.min(
+            ethers.utils.formatUnits(dittoRemainingInSwap.toString(), 9),
+            ethers.utils.formatUnits(dittoRemainingInSwapForUser.toString(), 9)
+          )
+        );
       }
 
       if (availableTokens) {
@@ -176,15 +177,7 @@ export default function App() {
           <ArrowDownwardIcon color="secondary" style={{ marginTop: 30, fontSize: 50 }} />
           <div className={classes.recieveInput}>
             {dittoRemaining && <Typography variant="caption" className={classes.availableBalanceCaption}>DITTO remaining:{`${dittoRemaining}`}</Typography>}
-            <TextField id="recieve-input" label="recieve" variant="outlined" defaultValue="0" InputProps={{
-              endAdornment:
-                <InputAdornment position="end">
-                  <Typography>DITTO</Typography>
-                </InputAdornment>,
-              readOnly: true,
-              value: dittoOutputAmount,
-              disabled: loading
-            }} />
+            <TokenOutputField loading={loading} dittoOutputAmount={dittoOutputAmount} />
           </div>
           <div className={classes.swapButton}>
             <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} />
