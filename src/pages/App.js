@@ -82,7 +82,7 @@ export default function App() {
       if (swapContract) {
         const usdRate = await swapContract.dittoUSDRate();
         setUsdDittoRate(ethers.utils.formatUnits(usdRate.toString(), 3));
-        console.log(usdDittoRate)
+        console.log(usdDittoRate);
         const dittoRemainingInSwap = await swapContract.remainingTokensInActiveSwap();
         const dittoRemainingInSwapForUser = await swapContract.remainingTokensForUser(address);
         setDittoRemaining(
@@ -140,11 +140,9 @@ export default function App() {
       try {
         setSwapState('approvingSwap');
         const approveAllowanceTx = await selectedToken.tokenContract.approve(swapContract.address, amount);
-        console.log(approveAllowanceTx.hash);
         await approveAllowanceTx.wait();
         setSwapState('swapApproved');
       } catch (error) {
-        console.log(error);
         setSwapState('error');
       }
     }
@@ -154,11 +152,9 @@ export default function App() {
     try {
       setSwapState('swapLoading');
       const swapTx = await swapContract.swap(selectedToken.address, inputTokenAmount);
-      console.log('sent', swapTx.hash);
       await swapTx.wait();
       setSwapState('swapComplete');
     } catch (error) {
-      console.log(error);
       setSwapState('error');
     }
 
@@ -180,7 +176,7 @@ export default function App() {
             <TokenOutputField loading={loading} dittoOutputAmount={dittoOutputAmount} />
           </div>
           <div className={classes.swapButton}>
-            <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} />
+            <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} dittoOutputAmount={dittoOutputAmount} />
           </div>
         </form>
       </main>

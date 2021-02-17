@@ -29,7 +29,6 @@ export function WalletProvider({ children }) {
   React.useEffect(() => {
     (async () => {
       if (signer) {
-        console.log(swapContract);
         const numberOfInputs = await swapContract.numberOfInputs();
         const finalAvailableTokens = [];
         for (let tokenIndex = 0; tokenIndex < numberOfInputs.toNumber(); tokenIndex++) {
