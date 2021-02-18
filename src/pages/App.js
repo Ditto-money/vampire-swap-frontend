@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import InfoIcon from '@material-ui/icons/Info';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import Header from 'components/Header';
 import ConnectWallet from 'components/ConnectWallet';
@@ -177,10 +178,12 @@ export default function App() {
           <div className={classes.swapInput}>
             {selectedToken &&
               <div className={classes.availableBalanceCaption}>
+              <Tooltip title="Your balance of the selected input tokens." aria-label="Your balance of the selected input tokens." placement="top" interactive>
                 <InfoIcon color="secondary" style={{ fontSize: 20, paddingRight: 5 }} />
-                <Typography variant="caption" >
-                  Available balance:&nbsp;&nbsp;{`${selectedToken.balance}`}
-                </Typography>
+              </Tooltip>
+              <Typography variant="caption" >
+                Available balance:&nbsp;&nbsp;{`${selectedToken.balance}`}
+              </Typography>
               </div>
 
             }
@@ -189,12 +192,14 @@ export default function App() {
           <ArrowDownwardIcon color="secondary" style={{ marginTop: 30, fontSize: 50 }} />
           <div className={classes.recieveInput}>
             {dittoRemainingForUser &&
-              <div className={classes.availableBalanceCaption}>
-                <InfoIcon color="secondary" style={{ fontSize: 20, paddingRight: 5 }} />
-                <Typography variant="caption" >
-                  DITTO remaining for user:&nbsp;&nbsp;{`${dittoRemainingForUser}`}
-                </Typography>
-              </div>
+            <div className={classes.availableBalanceCaption}>
+              <Tooltip title="Amount of DITTO you can still receive in this swap until the per user cap is reached." aria-label="Amount of DITTO you can still receive in this swap until the per user cap is reached." placement="top" interactive>
+                  <InfoIcon color="secondary" style={{ fontSize: 20, paddingRight: 5 }} />
+              </Tooltip>
+              <Typography variant="caption" >
+                DITTO remaining for user:&nbsp;&nbsp;{`${dittoRemainingForUser}`}
+              </Typography>
+            </div>
             }
 
             <TokenOutputField loading={loading} dittoOutputAmount={dittoOutputAmount} />
@@ -205,7 +210,9 @@ export default function App() {
         </form>
         <div className={classes.dittoLeft}>
           <Typography variant="caption">Total DITTO left: {totalDittoRemaining} </Typography>
-          <InfoIcon color="secondary" style={{ fontSize: 20, paddingLeft: 5 }} />
+          <Tooltip title="Total amount of DITTO still available for the incentivized swaps. DITTO is allocated on a first-come, first serve basis." aria-label="Total amount of DITTO still available for the incentivized swaps. DITTO is allocated on a first-come, first serve basis." placement="bottom" interactive>
+            <InfoIcon color="secondary" style={{ fontSize: 20, paddingLeft: 5 }} />
+          </Tooltip>
         </div>
       </main>
       <ConnectWallet />
