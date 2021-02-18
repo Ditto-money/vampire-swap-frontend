@@ -47,12 +47,15 @@ const useStyles = makeStyles(theme => {
     swapInput: {
       marginTop: 30,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      width: 350
     },
     recieveInput: {
       marginTop: 40,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      width: 350
+
     },
     availableBalanceCaption: {
       display: 'flex',
@@ -185,9 +188,8 @@ export default function App() {
                 Available balance:&nbsp;&nbsp;{`${selectedToken.balance}`}
               </Typography>
               </div>
-
             }
-            <TokenInputField loading={loading} selectedToken={selectedToken} handleTokenChange={handleTokenChange} inputTokens={inputTokens} handleInputAmount={handleInputAmount} swapState={swapState} />
+            <TokenInputField loading={loading} selectedToken={selectedToken} handleTokenChange={handleTokenChange} inputTokenAmount={inputTokenAmount} inputTokens={inputTokens} handleInputAmount={handleInputAmount} swapState={swapState} />
           </div>
           <ArrowDownwardIcon color="secondary" style={{ marginTop: 30, fontSize: 50 }} />
           <div className={classes.recieveInput}>
