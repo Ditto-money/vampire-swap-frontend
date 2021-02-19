@@ -7,6 +7,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import InfoIcon from '@material-ui/icons/Info';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import Header from 'components/Header';
 import ConnectWallet from 'components/ConnectWallet';
@@ -48,15 +50,25 @@ const useStyles = makeStyles(theme => {
       flexDirection: 'column'
     },
     recieveInput: {
-      marginTop: 50,
+      marginTop: 40,
       display: 'flex',
       flexDirection: 'column'
     },
     availableBalanceCaption: {
-      textAlign: 'right'
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-end',
+      marginBottom: 5
     },
     swapButton: {
       marginTop: 50,
+    },
+    dittoLeft: {
+      alignSelf: 'self-end',
+      marginLeft: '30%',
+      marginTop: 30,
+      display: 'flex',
+      alignItems: 'center'
     }
   };
 });
@@ -68,7 +80,8 @@ export default function App() {
   const [selectedToken, setSelectedToken] = React.useState(null);
   const [dittoOutputAmount, setDittoOutputAmount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  const [dittoRemaining, setDittoRemaining] = React.useState();
+  const [totalDittoRemaining, setTotalDittoRemaining] = React.useState();
+  const [dittoRemainingForUser, setDittoRemainingForUser] = React.useState();
   const [swapState, setSwapState] = React.useState('initial');
   const [inputTokenAmount, setInputTokenAmount] = React.useState(0);
   const [usdDittoRate, setUsdDittoRate] = React.useState(0);
@@ -85,12 +98,8 @@ export default function App() {
         console.log(usdDittoRate);
         const dittoRemainingInSwap = await swapContract.remainingTokensInActiveSwap();
         const dittoRemainingInSwapForUser = await swapContract.remainingTokensForUser(address);
-        setDittoRemaining(
-          Math.min(
-            ethers.utils.formatUnits(dittoRemainingInSwap.toString(), 9),
-            ethers.utils.formatUnits(dittoRemainingInSwapForUser.toString(), 9)
-          )
-        );
+        setTotalDittoRemaining(ethers.utils.formatUnits(dittoRemainingInSwap.toString(), 9));
+        setDittoRemainingForUser(ethers.utils.formatUnits(dittoRemainingInSwapForUser.toString(), 9));
       }
 
       if (availableTokens) {
@@ -167,18 +176,44 @@ export default function App() {
         {isOnWrongNetwork ? <Typography>{`Switch to ${NETWORK_NAME} to  proceed with swap for DITTO`}</Typography> : null}
         <form className={classes.formContainer} noValidate autoComplete="off">
           <div className={classes.swapInput}>
-            {selectedToken && <Typography variant="caption" className={classes.availableBalanceCaption}>Available balance:{`${selectedToken.balance}`}</Typography>}
+            {selectedToken &&
+              <div className={classes.availableBalanceCaption}>
+              <Tooltip title="Your balance of the selected input tokens." aria-label="Your balance of the selected input tokens." placement="top" interactive>
+                <InfoIcon color="secondary" style={{ fontSize: 20, paddingRight: 5 }} />
+              </Tooltip>
+              <Typography variant="caption" >
+                Available balance:&nbsp;&nbsp;{`${selectedToken.balance}`}
+              </Typography>
+              </div>
+
+            }
             <TokenInputField loading={loading} selectedToken={selectedToken} handleTokenChange={handleTokenChange} inputTokens={inputTokens} handleInputAmount={handleInputAmount} swapState={swapState} />
           </div>
           <ArrowDownwardIcon color="secondary" style={{ marginTop: 30, fontSize: 50 }} />
           <div className={classes.recieveInput}>
-            {dittoRemaining && <Typography variant="caption" className={classes.availableBalanceCaption}>DITTO remaining:{`${dittoRemaining}`}</Typography>}
+            {dittoRemainingForUser &&
+            <div className={classes.availableBalanceCaption}>
+              <Tooltip title="Amount of DITTO you can still receive in this swap until the per user cap is reached." aria-label="Amount of DITTO you can still receive in this swap until the per user cap is reached." placement="top" interactive>
+                  <InfoIcon color="secondary" style={{ fontSize: 20, paddingRight: 5 }} />
+              </Tooltip>
+              <Typography variant="caption" >
+                DITTO remaining for user:&nbsp;&nbsp;{`${dittoRemainingForUser}`}
+              </Typography>
+            </div>
+            }
+
             <TokenOutputField loading={loading} dittoOutputAmount={dittoOutputAmount} />
           </div>
           <div className={classes.swapButton}>
             <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} dittoOutputAmount={dittoOutputAmount} />
           </div>
         </form>
+        <div className={classes.dittoLeft}>
+          <Typography variant="caption">Total DITTO left: {totalDittoRemaining} </Typography>
+          <Tooltip title="Total amount of DITTO still available for the incentivized swaps. DITTO is allocated on a first-come, first serve basis." aria-label="Total amount of DITTO still available for the incentivized swaps. DITTO is allocated on a first-come, first serve basis." placement="bottom" interactive>
+            <InfoIcon color="secondary" style={{ fontSize: 20, paddingLeft: 5 }} />
+          </Tooltip>
+        </div>
       </main>
       <ConnectWallet />
     </Box>
