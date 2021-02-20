@@ -6,23 +6,19 @@ export const CACHE_WALLET_KEY = 'wallet';
 
 export const BORDER_RADIUS = 8;
 
-export const IS_TESTNET = !!~window.location.href.indexOf('testnet');
-export const IS_DEV = !!~window.location.href.indexOf('local');
+export const SWAP_CONTRACT_ADDRESS_ROPSTEN = '0xFDaCD496EfFB198C81Fb5E74F156e889f4ecCF91'
+export const SWAP_CONTRACT_ADDRESS_MAINNET = ''
 
-export const API_URL =
-  process.env.REACT_APP_API_URL ||
-  (IS_TESTNET
-    ? 'https://ditto.money/api-testnet'
-    : IS_DEV
-    ? 'http://localhost:5001'
-    : 'https://ditto.money/api');
+export const IS_TESTNET = SWAP_CONTRACT_ADDRESS_MAINNET === ''
+export const IS_DEV = IS_TESTNET
 
 
-export const INFURA_ID = '1e8cc8aac2bd47f98da31fd2846d6132';
+export const SWAP_CONTRACT_ADDRESS = IS_TESTNET || IS_DEV ? SWAP_CONTRACT_ADDRESS_ROPSTEN : SWAP_CONTRACT_ADDRESS_MAINNET;
+
+
 
 export const NETWORK_NAME = IS_TESTNET || IS_DEV ? 'Ethereum Testnet Ropsten' : 'Ethereum Mainnet';
 
-export const SWAP_CONTRACT_ADDRESS = IS_TESTNET || IS_DEV ? '0xFDaCD496EfFB198C81Fb5E74F156e889f4ecCF91' : '0xFDaCD496EfFB198C81Fb5E74F156e889f4ecCF91';
 
 export const NETWORK_CHAIN_ID = IS_TESTNET || IS_DEV ? 3 : 1;
 
