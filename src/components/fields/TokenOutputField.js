@@ -8,7 +8,7 @@ import {
 
 export default function TokenInputField(props) {
     return (
-        <TextField id="recieve-input" label="recieve" variant="outlined" defaultValue="0" InputProps={{
+        <TextField id="recieve-input" label="recieve" variant="outlined" defaultValue="0" fullWidth InputProps={{
             endAdornment:
                 <InputAdornment position="end">
                     <Typography>DITTO</Typography>
