@@ -11,9 +11,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 
 
-const preventDecimalEntry = (e) => {
-    if (e.key === '.') { e.preventDefault(); }
-};
 
 const useStyles = makeStyles(theme => {
     return {
@@ -64,7 +61,7 @@ export default function TokenInputField(props) {
                 props.handleInputAmount(e.target.value);
                 setInputValue(e.target.value);
             },
-            inputProps: { min: 0, onKeyPress: (e) => preventDecimalEntry(e) },
+            inputProps: { min: 0 },
             disabled: props.loading || props.swapState === 'swapLoading',
             value: inputValue,
             placeholder: 'Amount to swap',
