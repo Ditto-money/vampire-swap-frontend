@@ -34,7 +34,7 @@ export default function TokenInputField(props) {
             endAdornment:
                 <InputAdornment position="end">
                     {!props.loading &&
-                        <Button className={classes.availableBalanceButton} color="secondary" onClick={() => { props.handleInputAmount(Math.floor(props.selectedToken.balance).toString()); setInputValue(Math.floor(props.selectedToken.balance).toString()); }}>
+                        <Button disabled={props.loading || props.swapState === 'swapLoading'} className={classes.availableBalanceButton} color="secondary" onClick={() => { props.handleInputAmount(props.selectedToken.balance.toString()); setInputValue(props.selectedToken.balance.toString()); }}>
                             Max
                         </Button>
                     }
