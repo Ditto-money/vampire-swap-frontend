@@ -28,14 +28,13 @@ const useStyles = makeStyles(theme => {
 export default function TokenInputField(props) {
     const classes = useStyles();
     const [inputValue, setInputValue] = useState();
-    console.log(props.inputTokenAmount);
 
     return (
         <TextField id="swap-input" label={`${props.loading ? '' : 'swap'}`} type="number" variant="outlined" InputLabelProps={{ shrink: true }} fullWidth InputProps={{
             endAdornment:
                 <InputAdornment position="end">
                     {!props.loading &&
-                        <Button className={classes.availableBalanceButton} color="secondary" onClick={() => { props.handleInputAmount(Math.floor(props.selectedToken.balance).toString()); setInputValue(Math.floor(props.selectedToken.balance).toString()); }}>
+                        <Button disabled={props.loading || props.swapState === 'swapLoading'} className={classes.availableBalanceButton} color="secondary" onClick={() => { props.handleInputAmount(props.selectedToken.balance.toString()); setInputValue(props.selectedToken.balance.toString()); }}>
                             Max
                         </Button>
                     }

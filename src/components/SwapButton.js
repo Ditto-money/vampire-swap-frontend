@@ -9,6 +9,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
+import InfoIcon from '@material-ui/icons/Info';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 
@@ -151,6 +153,12 @@ export default function SwapButton(props) {
     return (
         <div>
             {renderButton(props.swapState, props.approveSwap, props.swap)}
+            {props.swapState === 'initial' &&
+                <Tooltip title="Approve input tokens for swapping. Will only send an Ethereum transaction if prior approval is insufficient." aria-label="Approve input tokens for swapping. Will only send an Ethereum transaction if prior approval is insufficient." placement="top" interactive>
+                    <InfoIcon color="secondary" style={{ fontSize: 25, paddingLeft: 10 }} />
+                </Tooltip>
+            }
+
             <Modal
                 aria-labelledby="spring-modal-title"
                 aria-describedby="spring-modal-description"

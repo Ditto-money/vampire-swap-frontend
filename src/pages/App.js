@@ -88,6 +88,7 @@ export default function App() {
   const [swapState, setSwapState] = React.useState('initial');
   const [inputTokenAmount, setInputTokenAmount] = React.useState(0);
   const [usdDittoRate, setUsdDittoRate] = React.useState(0);
+  const [approvedAllowanceAmount, setApprovedAllowanceAmount] = React.useState(0);
 
 
   const { address, availableTokens, swapContract, isOnWrongNetwork } = useWallet();
@@ -120,12 +121,25 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableTokens]);
 
+  useEffect(() => {
+    const checkAllowance = async () => {
+      if (selectedToken) {
+        const approveAllowance = ethers.utils.formatUnits(await selectedToken.tokenContract.allowance(address, swapContract.address), selectedToken.decimals);
+        setApprovedAllowanceAmount(approveAllowance)
+      }
+    }
+    checkAllowance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedToken])
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
 
   const handleTokenChange = (event) => {
+    if (swapState === 'approvingSwap' || 'swapApproved') {
+      setSwapState('initial');
+    }
     setSelectedToken(event.target.value);
   };
 
@@ -147,14 +161,21 @@ export default function App() {
   const handleInputAmount = debounce((inputAmount) => calculateOutputAmount(inputAmount), 500);
 
   const approveSwap = async () => {
-    if (parseFloat(inputTokenAmount) > 0) {
-      const amount = ethers.utils.parseUnits(`${inputTokenAmount}.0`, selectedToken.decimals);
+    const formattedInputTokenAmount = ethers.utils.formatUnits(inputTokenAmount, selectedToken.decimals);
+    if (parseFloat(formattedInputTokenAmount) > 0) {
+      // const amountApproved = ethers.utils.parseUnits(`${ethers.utils.formatUnits(inputTokenAmount, selectedToken.decimals)}.0`, selectedToken.decimals);
+      // approve more to avoid approval fees in the future
+      const amountToApprove = ethers.utils.parseUnits(`${10000000000}.0`, selectedToken.decimals);
+
       try {
         setSwapState('approvingSwap');
-        const approveAllowanceTx = await selectedToken.tokenContract.approve(swapContract.address, amount);
-        await approveAllowanceTx.wait();
+        if (approvedAllowanceAmount < parseFloat(formattedInputTokenAmount)) {
+          const approveAllowanceTx = await selectedToken.tokenContract.approve(swapContract.address, amountToApprove);
+          await approveAllowanceTx.wait();
+        } 
         setSwapState('swapApproved');
       } catch (error) {
+        console.log(error)
         setSwapState('error');
       }
     }
@@ -167,6 +188,7 @@ export default function App() {
       await swapTx.wait();
       setSwapState('swapComplete');
     } catch (error) {
+      console.log(error)
       setSwapState('error');
     }
 
