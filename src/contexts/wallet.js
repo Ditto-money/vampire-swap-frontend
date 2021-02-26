@@ -1,7 +1,6 @@
 import React from 'react';
 import { ethers } from 'ethers';
 import {
-  READ_WEB3_PROVIDER,
   CACHE_WALLET_KEY,
   NETWORK_CHAIN_ID,
   SWAP_CONTRACT_ADDRESS
@@ -11,9 +10,6 @@ import TOKEN_ABI from 'abis/token.json';
 import SWAP_ABI from 'abis/swap.json';
 
 
-export const READ_PROVIDER = new ethers.providers.JsonRpcProvider(
-  READ_WEB3_PROVIDER
-);
 
 const WalletContext = React.createContext(null);
 

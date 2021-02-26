@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => {
 export default function TokenInputField(props) {
     const classes = useStyles();
     const [inputValue, setInputValue] = useState();
-    console.log(props.inputTokenAmount);
 
     return (
         <TextField id="swap-input" label={`${props.loading ? '' : 'swap'}`} type="number" variant="outlined" InputLabelProps={{ shrink: true }} fullWidth InputProps={{
