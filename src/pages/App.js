@@ -148,12 +148,13 @@ export default function App() {
 
   const handleTokenChange = (event) => {
     setSelectedToken(event.target.value);
+    calculateOutputAmount(ethers.utils.formatUnits(inputTokenAmount, selectedToken.decimals), event.target.value);
   };
 
-  const calculateOutputAmount = async (inputAmount) => {
+  const calculateOutputAmount = async (inputAmount, token) => {
     if (inputAmount > 0) {
-      const convertedInputAmount = ethers.utils.parseUnits(inputAmount, selectedToken.decimals);
-      const output = await swapContract.getDittoOutputAmount(convertedInputAmount, selectedToken.address);
+      const convertedInputAmount = ethers.utils.parseUnits(inputAmount, token.decimals);
+      const output = await swapContract.getDittoOutputAmount(convertedInputAmount, token.address);
       setDittoOutputAmount(ethers.utils.formatUnits(output, 9));
       setInputTokenAmount(convertedInputAmount);
     } else {
@@ -162,7 +163,7 @@ export default function App() {
     }
   };
 
-  const handleInputAmount = debounce((inputAmount) => calculateOutputAmount(inputAmount), 500);
+  const handleInputAmount = debounce((inputAmount) => calculateOutputAmount(inputAmount, selectedToken), 500);
 
   const approveSwap = async () => {
     const formattedInputTokenAmount = ethers.utils.formatUnits(inputTokenAmount, selectedToken.decimals);
