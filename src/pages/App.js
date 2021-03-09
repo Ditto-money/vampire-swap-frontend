@@ -83,7 +83,9 @@ export default function App() {
   const [selectedToken, setSelectedToken] = React.useState(null);
   const [dittoOutputAmount, setDittoOutputAmount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [totalDittoRemaining, setTotalDittoRemaining] = React.useState();
+  // eslint-disable-next-line no-unused-vars
   const [dittoRemainingForUser, setDittoRemainingForUser] = React.useState();
   const [swapState, setSwapState] = React.useState('amountIsZero');
   const [error, setError] = React.useState(null);
@@ -225,16 +227,6 @@ export default function App() {
           </div>
           <ArrowDownwardIcon color="secondary" style={{ marginTop: 30, fontSize: 50 }} />
           <div className={classes.recieveInput}>
-            {dittoRemainingForUser &&
-            <div className={classes.availableBalanceCaption}>
-              <Tooltip title="Amount of DITTO you can still receive in this swap until the per user cap is reached." aria-label="Amount of DITTO you can still receive in this swap until the per user cap is reached." placement="top" interactive>
-                  <InfoIcon color="secondary" style={{ fontSize: 20, paddingRight: 5 }} />
-              </Tooltip>
-              <Typography variant="caption" >
-                DITTO remaining for user:&nbsp;&nbsp;{`${dittoRemainingForUser}`}
-              </Typography>
-            </div>
-            }
 
             <TokenOutputField loading={loading} dittoOutputAmount={dittoOutputAmount} />
           </div>
@@ -242,12 +234,6 @@ export default function App() {
             <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} dittoOutputAmount={dittoOutputAmount} error={error} setError={setError} />
           </div>
         </form>
-        <div className={classes.dittoLeft}>
-          <Typography variant="caption">Total DITTO left: {totalDittoRemaining} </Typography>
-          <Tooltip title="Total amount of DITTO still available for the incentivized swaps. DITTO is allocated on a first-come, first serve basis." aria-label="Total amount of DITTO still available for the incentivized swaps. DITTO is allocated on a first-come, first serve basis." placement="bottom" interactive>
-            <InfoIcon color="secondary" style={{ fontSize: 20, paddingLeft: 5 }} />
-          </Tooltip>
-        </div>
       </main>
       <ConnectWallet />
     </Box>
