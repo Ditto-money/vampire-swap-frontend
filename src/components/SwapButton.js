@@ -27,6 +27,15 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+    buttonContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    errorMessage: {
+        color: 'red',
+    }
+
 }));
 
 const Fade = React.forwardRef(function Fade(props, ref) {
@@ -89,7 +98,7 @@ const LoadingIcon = withStyles((theme) => ({
     }
 }))(CachedIcon);
 
-const renderButton = (swapState, approveSwap, swap) => {
+const renderButton = (swapState, approveSwap, swap, setError) => {
     switch (swapState) {
         case 'amountIsZero':
             return <ColourButton
@@ -99,7 +108,7 @@ const renderButton = (swapState, approveSwap, swap) => {
                 size="large">Enter an amount</ColourButton>;
         case 'initial':
             return <ColourButton
-                onClick={() => approveSwap()}
+                onClick={() => { approveSwap(); setError(null); }}
                 variant="contained"
                 color="secondary"
                 size="large"
@@ -115,7 +124,7 @@ const renderButton = (swapState, approveSwap, swap) => {
                 variant="contained"
                 color="secondary"
                 size="large"
-                onClick={() => swap()}
+                onClick={() => { swap(); setError(null); }}
                 startIcon={<SwapVertIcon />}>Swap for Ditto</ColourButton>;
         case 'swapLoading':
             return <ColourButton
@@ -129,8 +138,6 @@ const renderButton = (swapState, approveSwap, swap) => {
                 color="secondary"
                 size="large"
                 startIcon={<CheckIcon />}>Swap Complete</ColourButton>;
-        case 'error':
-            return <p>Error occured</p>;
         default:
             return null;
     }
@@ -153,10 +160,10 @@ export default function SwapButton(props) {
         if (props.swapState === 'swapComplete') handleOpen();
     }, [props.swapState]);
 
-
     return (
-        <div>
-            {renderButton(props.swapState, props.approveSwap, props.swap)}
+        <div className={classes.buttonContainer}>
+            {renderButton(props.swapState, props.approveSwap, props.swap, props.setError)}
+            {props.error && <p className={classes.errorMessage}>{props.error}</p>}
             {/* {props.swapState === 'initial' &&
                 <Tooltip title="Approve input tokens for swapping. Will only send an Ethereum transaction if prior approval is insufficient." aria-label="Approve input tokens for swapping. Will only send an Ethereum transaction if prior approval is insufficient." placement="top" interactive>
                     <InfoIcon color="secondary" style={{ fontSize: 25, paddingLeft: 10 }} />

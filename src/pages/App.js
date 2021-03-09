@@ -86,6 +86,7 @@ export default function App() {
   const [totalDittoRemaining, setTotalDittoRemaining] = React.useState();
   const [dittoRemainingForUser, setDittoRemainingForUser] = React.useState();
   const [swapState, setSwapState] = React.useState('amountIsZero');
+  const [error, setError] = React.useState(null);
   const [inputTokenAmount, setInputTokenAmount] = React.useState(0);
   const [usdDittoRate, setUsdDittoRate] = React.useState(0);
   const [approvedAllowanceAmount, setApprovedAllowanceAmount] = React.useState(0);
@@ -149,6 +150,7 @@ export default function App() {
   const handleTokenChange = (event) => {
     setSelectedToken(event.target.value);
     calculateOutputAmount(ethers.utils.formatUnits(inputTokenAmount, selectedToken.decimals), event.target.value);
+    setError(null);
   };
 
   const calculateOutputAmount = async (inputAmount, token) => {
@@ -157,9 +159,11 @@ export default function App() {
       const output = await swapContract.getDittoOutputAmount(convertedInputAmount, token.address);
       setDittoOutputAmount(ethers.utils.formatUnits(output, 9));
       setInputTokenAmount(convertedInputAmount);
+      setError(null);
     } else {
       setDittoOutputAmount(0);
       setInputTokenAmount(0);
+      setError(null);
     }
   };
 
@@ -180,8 +184,9 @@ export default function App() {
         } 
         setSwapState('swapApproved');
       } catch (error) {
-        console.log(error)
-        setSwapState('error');
+        console.log(error);
+        setError('Unable to complete transaction, please try again. :)');
+
       }
     }
   };
@@ -193,8 +198,8 @@ export default function App() {
       await swapTx.wait();
       setSwapState('swapComplete');
     } catch (error) {
-      console.log(error)
-      setSwapState('error');
+      console.log(error);
+      setError('Unable to complete transaction, please try again. :)');
     }
 
   };
@@ -234,7 +239,7 @@ export default function App() {
             <TokenOutputField loading={loading} dittoOutputAmount={dittoOutputAmount} />
           </div>
           <div className={classes.swapButton}>
-            <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} dittoOutputAmount={dittoOutputAmount} />
+            <SwapButton swapState={swapState} approveSwap={approveSwap} swap={swap} dittoOutputAmount={dittoOutputAmount} error={error} setError={setError} />
           </div>
         </form>
         <div className={classes.dittoLeft}>
