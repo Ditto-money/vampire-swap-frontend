@@ -85,7 +85,7 @@ export default function App() {
   const [loading, setLoading] = React.useState(true);
   const [totalDittoRemaining, setTotalDittoRemaining] = React.useState();
   const [dittoRemainingForUser, setDittoRemainingForUser] = React.useState();
-  const [swapState, setSwapState] = React.useState('initial');
+  const [swapState, setSwapState] = React.useState('amountIsZero');
   const [inputTokenAmount, setInputTokenAmount] = React.useState(0);
   const [usdDittoRate, setUsdDittoRate] = React.useState(0);
   const [approvedAllowanceAmount, setApprovedAllowanceAmount] = React.useState(0);
@@ -124,30 +124,34 @@ export default function App() {
   useEffect(() => {
     const checkAllowance = async () => {
       if (selectedToken) {
-        const approveAllowance = ethers.utils.formatUnits(await selectedToken.tokenContract.allowance(address, swapContract.address), selectedToken.decimals);
-        setApprovedAllowanceAmount(approveAllowance)
+        const formattedInputTokenAmount = ethers.utils.formatUnits(inputTokenAmount, selectedToken.decimals);
+        const approvedAllowance = ethers.utils.formatUnits(await selectedToken.tokenContract.allowance(address, swapContract.address), selectedToken.decimals);
+        setApprovedAllowanceAmount(approvedAllowance);
+
+        if (parseFloat(formattedInputTokenAmount) <= 0) {
+          setSwapState('amountIsZero');
+        } else if (!(parseFloat(approvedAllowance) <= parseFloat(formattedInputTokenAmount))) {
+          setSwapState('swapApproved');
+        } else {
+          setSwapState('initial');
+        }
       }
-    }
+    };
     checkAllowance();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedToken])
+
+  }, [selectedToken, address, swapContract, inputTokenAmount, swapState]);
+
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
 
   const handleTokenChange = (event) => {
-    if (swapState === 'approvingSwap' || 'swapApproved') {
-      setSwapState('initial');
-    }
     setSelectedToken(event.target.value);
   };
 
   const calculateOutputAmount = async (inputAmount) => {
-    if (swapState === 'approvingSwap' || 'swapApproved') {
-      setSwapState('initial');
-    }
-    if (inputAmount) {
+    if (inputAmount > 0) {
       const convertedInputAmount = ethers.utils.parseUnits(inputAmount, selectedToken.decimals);
       const output = await swapContract.getDittoOutputAmount(convertedInputAmount, selectedToken.address);
       setDittoOutputAmount(ethers.utils.formatUnits(output, 9));
